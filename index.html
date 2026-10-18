@@ -3,387 +3,646 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PHARE — Les outils de FIDAL Notaires</title>
-<meta name="description" content="Point d’entrée des outils du cabinet : chercher un besoin, ouvrir l’outil.">
-<meta name="theme-color" content="#0F2238">
+<title>PHARE — Les outils</title>
+<meta name="description" content="Les outils, reliés par thème. Une sphère, un outil.">
+<meta name="theme-color" content="#081625">
 <script src="https://connexion-omega.vercel.app/bandeau.js" defer></script>
 <style>
 /* ------------------------------------------------------------------
-   PHARE — portail d’accueil des outils de FIDAL Notaires
+   PHARE — page d’accueil et passerelle vers les outils
    Charte FIDAL v2.2 : Georgia (titres) / Segoe UI (texte)
    bleu nuit #0F2238 · canard #33838B · orange #FF982D
    carmin #A01040 · cyan #6DD5DC · jaune #FFC900
    Fichier unique, aucune dépendance.
+   Visibilité des outils : base de réglages mutualisée, par l’interface
+   de PRIX (outil « phare », clé « visibilite »).
 ------------------------------------------------------------------ */
 :root{
-  --nuit:#0F2238;
-  --canard:#33838B;
-  --orange:#FF982D;
-  --carmin:#A01040;
-  --cyan:#6DD5DC;
-  --jaune:#FFC900;
-  --papier:#F7F8F9;
-  --blanc:#FFFFFF;
-  --encre:#1B2A3A;
-  --gris:#5E6B79;
-  --filet:#DCE2E8;
+  --fond:#081625; --canard:#33838B; --orange:#FF982D; --carmin:#A01040;
+  --cyan:#6DD5DC; --jaune:#FFC900; --texte:#E8EFF5; --gris:#92A6B8;
+  --bord:#27425B; --ardoise:#122A42;
 }
 *{box-sizing:border-box}
-html,body{margin:0;padding:0}
+html,body{height:100%}
 body{
-  background:var(--papier);
-  color:var(--encre);
-  font:16px/1.55 "Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
-  -webkit-font-smoothing:antialiased;
+  margin:0;background:var(--fond);color:var(--texte);
+  font:16px/1.5 "Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
 }
-a{color:inherit}
-.enveloppe{max-width:1120px;margin:0 auto;padding:0 28px}
+body::before{
+  content:"";position:fixed;inset:-20% -10% auto;height:70vh;pointer-events:none;
+  background:radial-gradient(60% 70% at 50% 0%,rgba(51,131,139,.22),transparent 70%);
+}
+.enveloppe{max-width:1240px;margin:0 auto;padding:0 26px;position:relative}
 
 /* ---------- en-tête ---------- */
-header{background:var(--nuit);color:#fff}
-.barre{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:18px 0}
-.marque{display:flex;align-items:center;gap:14px;text-decoration:none}
-.trait{width:3px;height:40px;background:var(--jaune);border-radius:2px}
-.marque b{display:block;font-family:Georgia,"Times New Roman",serif;font-size:20px;letter-spacing:.14em;font-weight:400;line-height:1.1}
-.marque span{display:block;font-size:11px;letter-spacing:.3em;color:var(--cyan);line-height:1.6}
+.barre{display:flex;align-items:center;justify-content:space-between;gap:22px;padding:20px 0 6px}
+.marque{display:flex;align-items:center;gap:13px;text-decoration:none;color:inherit}
+.trait{width:3px;height:38px;background:var(--jaune);border-radius:2px}
+.marque b{display:block;font-family:Georgia,"Times New Roman",serif;font-size:19px;letter-spacing:.14em;font-weight:400;line-height:1.1}
+.marque span{display:block;font-size:10.5px;letter-spacing:.3em;color:var(--cyan);line-height:1.7}
 .raccourcis{display:flex;gap:4px;flex-wrap:wrap}
-.raccourcis a{
-  text-decoration:none;color:#C9D4DE;font-size:13.5px;padding:7px 12px;border-radius:4px;
-  border:1px solid transparent;white-space:nowrap;
-}
-.raccourcis a:hover,.raccourcis a:focus-visible{color:#fff;border-color:#2C4257;background:#152C44}
+.raccourcis a{text-decoration:none;color:#A8BBCB;font-size:13.5px;padding:7px 12px;border-radius:4px;border:1px solid transparent;white-space:nowrap}
+.raccourcis a:hover,.raccourcis a:focus-visible{color:#fff;border-color:var(--bord);background:rgba(255,255,255,.05)}
 
-/* ---------- recherche ---------- */
-.chapeau{background:var(--nuit);color:#fff;padding:14px 0 46px}
-.chapeau h1{
-  font-family:Georgia,serif;font-weight:400;font-size:clamp(26px,3.4vw,38px);
-  line-height:1.25;margin:0 0 6px;max-width:19em;
-}
-.chapeau p{margin:0 0 26px;color:#A9BACA;font-size:15.5px;max-width:46em}
-.champ{position:relative;max-width:620px}
+/* ---------- titre et recherche ---------- */
+.tete{display:flex;align-items:flex-end;justify-content:space-between;gap:30px;flex-wrap:wrap;padding:10px 0 18px}
+h1{font-family:Georgia,serif;font-weight:400;font-size:clamp(25px,3vw,34px);margin:0 0 4px;line-height:1.2}
+.tete p{margin:0;color:var(--gris);font-size:14.5px;max-width:44em}
+.champ{position:relative;width:min(380px,100%)}
 .champ input{
-  width:100%;padding:16px 18px 16px 50px;font-size:17px;font-family:inherit;color:var(--encre);
-  background:#fff;border:2px solid transparent;border-radius:6px;outline:none;
+  width:100%;padding:12px 14px 12px 42px;font-size:15px;font-family:inherit;color:var(--texte);
+  background:rgba(255,255,255,.06);border:1px solid var(--bord);border-radius:999px;outline:none;
 }
-.champ input:focus{border-color:var(--jaune)}
-.champ svg{position:absolute;left:17px;top:17px;width:20px;height:20px;stroke:var(--gris);fill:none;stroke-width:2}
-.pistes{margin:14px 0 0;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.pistes em{font-style:normal;color:#8DA0B2;font-size:13px;margin-right:2px}
-.pistes button{
-  font:inherit;font-size:13px;color:#D7E3EC;background:transparent;cursor:pointer;
-  border:1px solid #2C4257;border-radius:999px;padding:4px 12px;
-}
-.pistes button:hover,.pistes button:focus-visible{background:#152C44;color:#fff;border-color:#3D5873}
+.champ input::placeholder{color:#7D93A7}
+.champ input:focus{border-color:var(--jaune);background:rgba(255,255,255,.1)}
+.champ>svg{position:absolute;left:15px;top:12px;width:18px;height:18px;stroke:#7D93A7;fill:none;stroke-width:2}
 
-/* ---------- familles ---------- */
-main{padding:38px 0 10px}
-.famille{margin:0 0 34px}
-.famille h2{
-  font-family:Georgia,serif;font-weight:400;font-size:19px;margin:0 0 2px;
-  display:flex;align-items:center;gap:10px;
-}
-.famille h2 i{display:block;width:22px;height:3px;border-radius:2px;background:var(--canard)}
-.famille p.intro{margin:0 0 14px 32px;color:var(--gris);font-size:14px}
+/* ---------- constellation ---------- */
+.ciel{position:relative;margin:0 0 10px}
+svg.carte{width:100%;height:auto;display:block;overflow:visible;min-height:330px}
+.satellite{cursor:pointer}
+.satellite .bille{transition:transform .18s ease}
+.satellite:hover .bille,.satellite:focus-visible .bille{transform:scale(1.14)}
+.satellite:focus-visible{outline:none}
+.anneau{opacity:0;transition:opacity .15s}
+.satellite:hover .anneau,.satellite:focus-visible .anneau{opacity:.85}
+.etiquette{font:600 10.5px/1 "Segoe UI",sans-serif;letter-spacing:.12em;fill:#93A8BA;text-anchor:middle;pointer-events:none;transition:fill .18s}
+.satellite:hover .etiquette,.satellite:focus-visible .etiquette{fill:#fff}
+.theme-nom{font:400 15px/1 Georgia,serif;fill:#EAF2F8;text-anchor:middle;pointer-events:none}
+.theme-sous{font:400 10.5px/1 "Segoe UI",sans-serif;fill:#8FA5B8;text-anchor:middle;pointer-events:none}
+.brin{stroke-width:1;fill:none}
+.brin-long{stroke:#1E3650;stroke-width:1;fill:none;stroke-dasharray:3 7}
+.eteint{opacity:.1;pointer-events:none;cursor:default}
+g.grappe,g.satellite,path.brin-long{transition:opacity .25s}
+/* outil masqué aux collaborateurs — visible du seul administrateur */
+.masque .bille{opacity:.3}
+.masque .etiquette{fill:#6F8396;font-style:italic}
+@keyframes respire{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.satellite{animation:respire var(--duree,8s) ease-in-out infinite;animation-delay:var(--retard,0s)}
 
-.liste{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:2px 26px}
-.outil{
-  display:block;text-decoration:none;padding:13px 14px 14px 16px;
-  border-left:3px solid var(--filet);background:transparent;
+/* ---------- cartouche ---------- */
+.cartouche{
+  position:absolute;pointer-events:none;opacity:0;transform:translate(-50%,8px);
+  background:var(--ardoise);border:1px solid var(--bord);border-left:3px solid var(--canard);
+  border-radius:6px;padding:11px 14px;width:270px;z-index:5;
+  box-shadow:0 14px 34px rgba(0,0,0,.45);transition:opacity .15s;
 }
-.outil:hover,.outil:focus-visible{background:var(--blanc);border-left-color:currentColor;outline:none}
-.outil .titre{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
-.outil .titre b{font-weight:600;font-size:15.5px;color:var(--encre)}
-.outil .titre code{
-  font-family:inherit;font-size:11px;letter-spacing:.13em;color:var(--gris);
-  border:1px solid var(--filet);border-radius:3px;padding:1px 6px;background:var(--blanc);
-}
-.outil .quoi{margin:3px 0 0;font-size:13.5px;color:var(--gris);line-height:1.45}
-.outil:hover .quoi,.outil:focus-visible .quoi{color:#44525F}
+.cartouche.visible{opacity:1}
+.cartouche b{display:block;font-size:14.5px;margin-bottom:3px}
+.cartouche span{display:block;font-size:12.5px;color:#9FB4C6;line-height:1.45}
+.cartouche i{display:block;margin-top:7px;font-style:normal;font-size:11px;color:var(--jaune);letter-spacing:.08em}
 
-/* ---------- rien trouvé ---------- */
-.vide{display:none;padding:26px 0 40px;border-top:1px solid var(--filet)}
-.vide b{display:block;font-family:Georgia,serif;font-size:18px;font-weight:400;margin-bottom:6px}
-.vide p{margin:0;color:var(--gris);font-size:14.5px}
+/* ---------- repli en liste ---------- */
+.repli{display:none}
+.repli h2{font-family:Georgia,serif;font-weight:400;font-size:17px;margin:22px 0 2px;display:flex;align-items:center;gap:9px}
+.repli h2 i{width:20px;height:3px;border-radius:2px;display:block}
+.repli a{display:block;text-decoration:none;color:inherit;padding:11px 0 11px 14px;border-left:3px solid #1E3650}
+.repli a b{display:block;font-size:15px;font-weight:600}
+.repli a span{display:block;font-size:13px;color:var(--gris);margin-top:2px}
 
 /* ---------- pied ---------- */
-footer{border-top:1px solid var(--filet);margin-top:20px;padding:26px 0 46px;color:var(--gris);font-size:13.5px}
-footer .rangee{display:flex;justify-content:space-between;gap:28px;flex-wrap:wrap}
-footer a{color:var(--canard)}
-footer p{margin:0 0 6px}
+.vide{display:none;color:var(--gris);font-size:14.5px;padding:8px 0 18px;max-width:46em}
+footer{border-top:1px solid #1B3049;margin-top:14px;padding:20px 0 40px;color:#7D93A7;font-size:13px}
+footer a{color:var(--cyan);text-decoration:none}
+footer a:hover{text-decoration:underline}
+footer p{margin:0 0 5px}
+.lien-admin{background:none;border:none;color:#5E748A;font:inherit;font-size:12.5px;cursor:pointer;padding:0;text-decoration:underline}
+.lien-admin:hover{color:var(--cyan)}
 
-@media (max-width:640px){
-  .enveloppe{padding:0 18px}
-  .barre{flex-direction:column;align-items:flex-start;gap:12px}
-  .liste{grid-template-columns:1fr}
+/* ---------- boîte de code ---------- */
+.voile{position:fixed;inset:0;background:rgba(4,10,18,.78);display:none;align-items:center;justify-content:center;z-index:40;padding:20px}
+.voile.ouvert{display:flex}
+.boite{background:var(--ardoise);border:1px solid var(--bord);border-radius:10px;padding:24px;width:min(420px,100%);box-shadow:0 24px 60px rgba(0,0,0,.6)}
+.boite h3{font-family:Georgia,serif;font-weight:400;font-size:19px;margin:0 0 8px}
+.boite p{margin:0 0 16px;font-size:13.5px;color:var(--gris);line-height:1.5}
+.boite input{width:100%;padding:11px 13px;font:inherit;font-size:15px;color:var(--texte);background:rgba(255,255,255,.07);border:1px solid var(--bord);border-radius:6px;outline:none;margin-bottom:10px}
+.boite input:focus{border-color:var(--jaune)}
+.boite .erreur{color:#FF8A8A;font-size:13px;margin:0 0 10px;min-height:18px}
+.boite .boutons{display:flex;gap:9px;justify-content:flex-end}
+button.action{font:inherit;font-size:14px;padding:9px 16px;border-radius:6px;cursor:pointer;border:1px solid var(--bord);background:transparent;color:var(--texte)}
+button.action:hover{background:rgba(255,255,255,.07)}
+button.action.fort{background:var(--jaune);border-color:var(--jaune);color:#1B2A3A;font-weight:600}
+button.action.fort:hover{filter:brightness(1.08)}
+
+/* ---------- panneau d’administration ---------- */
+.admin{
+  position:fixed;top:0;right:0;bottom:0;width:330px;z-index:30;overflow-y:auto;
+  background:#0C1F33;border-left:1px solid var(--bord);padding:20px 20px 40px;display:none;
 }
-@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+body.mode-admin .admin{display:block}
+body.mode-admin .enveloppe{max-width:none;margin:0;padding-right:356px}
+.admin h3{font-family:Georgia,serif;font-weight:400;font-size:18px;margin:0 0 4px}
+.admin>p{font-size:12.5px;color:var(--gris);margin:0 0 16px;line-height:1.5}
+.admin h4{font-size:12px;letter-spacing:.1em;color:#8FA5B8;margin:18px 0 6px;display:flex;align-items:center;gap:8px;font-weight:600}
+.admin h4 i{width:16px;height:3px;border-radius:2px;display:block}
+.admin label{display:flex;align-items:flex-start;gap:9px;padding:7px 0;font-size:13.5px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.05)}
+.admin label span{line-height:1.35}
+.admin label em{display:block;font-style:normal;font-size:11px;letter-spacing:.1em;color:#6F8396;margin-top:2px}
+.admin input[type=checkbox]{width:16px;height:16px;margin-top:2px;accent-color:var(--jaune);flex:none}
+.admin .etat{font-size:12px;color:var(--gris);margin:16px 0 10px;min-height:18px}
+.bandeau-admin{
+  background:rgba(255,201,0,.1);border-bottom:1px solid rgba(255,201,0,.3);
+  padding:8px 0;font-size:13px;color:var(--jaune);display:none;
+}
+body.mode-admin .bandeau-admin{display:block}
+.bandeau-admin .enveloppe{display:flex;justify-content:space-between;align-items:center;gap:16px}
+
+@media (max-width:720px){
+  .ciel{display:none}
+  .repli{display:block}
+  .tete{align-items:flex-start}
+  .champ{width:100%}
+  .admin{width:100%;border-left:none}
+  body.mode-admin .enveloppe{padding-right:26px}
+}
+@media (prefers-reduced-motion:reduce){
+  .satellite{animation:none}
+  *{transition:none!important}
+}
 </style>
 </head>
 <body>
 
-<header>
+<div class="bandeau-admin">
   <div class="enveloppe">
-    <div class="barre">
-      <a class="marque" href="./" aria-label="PHARE, accueil">
-        <span class="trait" aria-hidden="true"></span>
-        <span><b>FIDAL</b><span>NOTAIRES</span></span>
-      </a>
-      <nav class="raccourcis" aria-label="Pages transversales">
-        <a href="https://connexion-omega.vercel.app/" target="_blank" rel="noopener">Ouvrir la journée</a>
-        <a href="https://carto-six.vercel.app/" target="_blank" rel="noopener">Carte des outils</a>
-        <a href="https://fidal-apps.vercel.app/" target="_blank" rel="noopener">Sur téléphone</a>
-      </nav>
-    </div>
+    <span>Mode administrateur — les outils décochés sont masqués aux collaborateurs.</span>
+    <button class="action" id="sortir-admin">Quitter</button>
+  </div>
+</div>
+
+<div class="enveloppe">
+  <div class="barre">
+    <a class="marque" href="./" aria-label="PHARE, accueil">
+      <span class="trait" aria-hidden="true"></span>
+      <span><b>FIDAL</b><span>NOTAIRES</span></span>
+    </a>
+    <nav class="raccourcis" aria-label="Pages transversales">
+      <a href="https://connexion-omega.vercel.app/" target="_blank" rel="noopener">Ouvrir la journée</a>
+      <a href="https://carto-six.vercel.app/" target="_blank" rel="noopener">Carte des outils</a>
+      <a href="https://fidal-apps.vercel.app/" target="_blank" rel="noopener">Sur téléphone</a>
+    </nav>
   </div>
 
-  <div class="enveloppe chapeau">
-    <h1>Les outils du cabinet, en un seul endroit.</h1>
-    <p>Dites ce que vous cherchez — une parcelle, des frais d’acte, un règlement de copropriété — la liste se réduit à mesure que vous tapez. Entrée ouvre le premier résultat.</p>
-
+  <div class="tete">
+    <div>
+      <h1>Les outils, reliés par thème.</h1>
+      <p>Une sphère, un outil : cliquez pour l’ouvrir. Tapez ce que vous cherchez — « termites », « frais d’acte », « copropriété » — et la constellation se réduit à ce qui répond.</p>
+    </div>
     <div class="champ">
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5 L21 21"/></svg>
-      <input id="q" type="search" autocomplete="off" autofocus
-             placeholder="Chercher un besoin, un outil, une commune…"
-             aria-label="Chercher un outil" aria-describedby="compte">
-    </div>
-
-    <div class="pistes">
-      <em>Par exemple</em>
-      <button type="button" data-mot="termites">termites</button>
-      <button type="button" data-mot="frais">frais d’acte</button>
-      <button type="button" data-mot="urbanisme">urbanisme</button>
-      <button type="button" data-mot="copropriété">copropriété</button>
-      <button type="button" data-mot="plan">plan cadastral</button>
-      <button type="button" data-mot="clause">clause</button>
+      <input id="q" type="search" autocomplete="off" placeholder="Chercher un besoin…" aria-label="Chercher un outil" aria-describedby="compte">
     </div>
   </div>
-</header>
 
-<main class="enveloppe">
-  <p id="compte" class="visually-hidden" aria-live="polite" style="position:absolute;left:-9999px"></p>
-  <div id="familles"></div>
+  <p id="compte" aria-live="polite" style="position:absolute;left:-9999px"></p>
+  <p class="vide" id="vide">Aucun outil ne répond à ces mots. Essayez plus simple — « parcelle », « titre », « prêt ». Et si l’outil qui vous manque n’existe pas, dites-le : la suite se construit sur vos besoins.</p>
 
-  <div class="vide" id="vide">
-    <b>Aucun outil ne correspond.</b>
-    <p>Essayez un mot plus simple — « parcelle », « titre », « prêt ». Si l’outil qui vous manque n’existe pas encore, dites-le à Jean-François Dumetz : la suite se construit sur vos besoins.</p>
+  <div class="ciel" id="ciel">
+    <svg class="carte" id="carte" viewBox="0 0 1200 720" role="img" aria-label="Les outils rangés par thème"></svg>
+    <div class="cartouche" id="cartouche" aria-hidden="true"><b></b><span></span><i>Cliquer pour ouvrir</i></div>
   </div>
-</main>
 
-<footer>
-  <div class="enveloppe rangee">
-    <div>
-      <p>Chaque outil s’ouvre dans un nouvel onglet.</p>
-      <p>Certains lisent vos dossiers Drive : passez d’abord par <a href="https://connexion-omega.vercel.app/" target="_blank" rel="noopener">Ouvrir la journée</a>.</p>
-    </div>
-    <div>
-      <p>Une idée, une anomalie : écrivez à Jean-François Dumetz.</p>
-      <p>Outils internes FIDAL Notaires Paris — usage réservé au cabinet.</p>
+  <div class="repli" id="repli"></div>
+
+  <footer>
+    <p>Chaque outil s’ouvre dans un nouvel onglet. Certains lisent le Drive : passez d’abord par <a href="https://connexion-omega.vercel.app/" target="_blank" rel="noopener">Ouvrir la journée</a>.</p>
+    <p>Une idée, une anomalie : écrivez à Jean-François Dumetz. <button class="lien-admin" id="ouvrir-admin">Administration</button></p>
+  </footer>
+</div>
+
+<aside class="admin" id="panneau-admin" aria-label="Administration de la visibilité">
+  <h3>Ce que voient les collaborateurs</h3>
+  <p>Décochez un outil pour le retirer de la page. Il disparaît entièrement : ni sphère, ni résultat de recherche. L’enregistrement est immédiat et vaut pour tout le monde.</p>
+  <div id="admin-listes"></div>
+  <p class="etat" id="admin-etat"></p>
+  <button class="action" id="changer-code">Changer le code</button>
+</aside>
+
+<div class="voile" id="voile">
+  <div class="boite">
+    <h3 id="boite-titre">Code d’administrateur</h3>
+    <p id="boite-texte">Saisissez le code pour gérer ce qui est visible.</p>
+    <input id="code1" type="password" autocomplete="off" placeholder="Code">
+    <input id="code2" type="password" autocomplete="off" placeholder="Répétez le code" hidden>
+    <p class="erreur" id="boite-erreur"></p>
+    <div class="boutons">
+      <button class="action" id="boite-annuler">Annuler</button>
+      <button class="action fort" id="boite-valider">Valider</button>
     </div>
   </div>
-</footer>
+</div>
 
 <script>
-/* ------------------------------------------------------------------
-   Le contenu du portail. Pour ajouter un outil : une ligne ici.
-   cles = mots que les collaborateurs taperont (la recherche les lit aussi).
------------------------------------------------------------------- */
-const FAMILLES = [
-  {id:"bien",   titre:"Le bien et son environnement", couleur:"#33838B",
-   intro:"Tout ce qui se vérifie à partir d’une parcelle ou d’une commune."},
-  {id:"titres", titre:"Les titres et l’origine de propriété", couleur:"#A01040",
-   intro:"Reconstituer une propriété, analyser un portefeuille, remonter une chaîne."},
-  {id:"chiffre",titre:"Chiffrer et calculer", couleur:"#FF982D",
-   intro:"Frais, émoluments, valeur d’un bien, coût d’un prêt."},
-  {id:"redige", titre:"Rédiger l’acte", couleur:"#0F2238",
-   intro:"Clauses, statuts, trames."},
-  {id:"seance", titre:"La séance et le quotidien", couleur:"#6DD5DC",
-   intro:"Ce qui sert pendant un rendez-vous, et le reste."}
+/* ==================================================================
+   1. CONTENU
+   Pour ajouter un outil : une ligne dans OUTILS.
+   pret:false  → masqué par défaut, tant que rien n’a été enregistré.
+================================================================== */
+const THEMES = [
+  {id:"bien",   nom:"Le bien",    sous:"environnement",    couleur:"#33838B", cx:275, cy:215, r:158, depart:-96},
+  {id:"titres", nom:"Les titres", sous:"et l’origine",     couleur:"#A01040", cx:930, cy:215, r:150, depart:-60},
+  {id:"chiffre",nom:"Chiffrer",   sous:"frais et valeurs", couleur:"#FF982D", cx:215, cy:512, r:125, depart:-120},
+  {id:"redige", nom:"Rédiger",    sous:"clauses, statuts", couleur:"#6DD5DC", cx:600, cy:398, r:118, depart:-30},
+  {id:"seance", nom:"La séance",  sous:"et le quotidien",  couleur:"#FFC900", cx:962, cy:505, r:142, depart:-50}
 ];
 
 const OUTILS = [
-  /* ---- le bien ---- */
-  {f:"bien", nom:"Fiche de parcelle et de bâti", code:"REDPAR",
-   url:"https://redpar-frontend.vercel.app/",
-   quoi:"Toutes les parcelles d’une société ou d’une personne, surfaces, bâti, propriétaires.",
-   cles:"parcelle cadastre bati siren société propriétaire surface commune"},
-
-  {f:"bien", nom:"Règles d’urbanisme", code:"URBA",
-   url:"https://urba-lemon.vercel.app/",
+  {id:"redpar", t:"bien", code:"REDPAR", nom:"Fiche de parcelle et de bâti", url:"https://redpar-frontend.vercel.app/",
+   quoi:"Les parcelles d’une société ou d’une personne : surfaces, bâti, propriétaires.",
+   cles:"parcelle cadastre bati siren societe proprietaire surface commune"},
+  {id:"urba", t:"bien", code:"URBA", nom:"Règles d’urbanisme", url:"https://urba-lemon.vercel.app/",
    quoi:"Zonage, servitudes et prescriptions applicables à une parcelle.",
    cles:"urbanisme plu zonage servitude gpu constructible"},
-
-  {f:"bien", nom:"Termites et mérule", code:"XYLO",
-   url:"https://xylo-phi.vercel.app/",
+  {id:"xylo", t:"bien", code:"XYLO", nom:"Termites et mérule", url:"https://xylo-phi.vercel.app/",
    quoi:"Arrêtés préfectoraux applicables à une commune ou à une parcelle.",
    cles:"termites merule arrete prefectoral insecte xylophage diagnostic"},
-
-  {f:"bien", nom:"Certificat d’urbanisme",code:"CERTIF",
-   url:"https://certif-bay.vercel.app/",
+  {id:"certif", t:"bien", code:"CERTIF", nom:"Certificat d’urbanisme", url:"https://certif-bay.vercel.app/",
    quoi:"Demande de certificat d’information (CUa) et suivi.",
    cles:"certificat urbanisme cua mairie demande"},
-
-  {f:"bien", nom:"Plans cadastraux coloriés", code:"PAINT",
-   url:"https://paint-blue.vercel.app/",
+  {id:"paint", t:"bien", code:"PAINT", nom:"Plans cadastraux coloriés", url:"https://paint-blue.vercel.app/",
    quoi:"Colorier les parcelles d’un dossier et sortir l’extrait officiel.",
    cles:"plan cadastral coloriage extrait dgfip carte dessin annexe"},
-
-  {f:"bien", nom:"Relevés de matrice cadastrale", code:"MATRICE",
-   url:"https://matrice-black.vercel.app/",
+  {id:"matrice", t:"bien", code:"MATRICE", nom:"Relevés de matrice cadastrale", url:"https://matrice-black.vercel.app/",
    quoi:"Demandes aux services du cadastre, et suivi de ce qui est parti.",
    cles:"matrice cadastrale sdif ptgc releve demande extrait"},
 
-  /* ---- les titres ---- */
-  {f:"titres", nom:"Audit de portefeuille immobilier", code:"MARTEAU",
-   url:"https://marteau-rho.vercel.app/",
+  {id:"marteau", t:"titres", code:"MARTEAU", nom:"Audit de portefeuille immobilier", url:"https://marteau-rho.vercel.app/",
    quoi:"Le dossier complet d’un portefeuille : il interroge les autres outils et compile le rapport.",
    cles:"audit portefeuille rapport dossier immeuble societe"},
-
-  {f:"titres", nom:"Analyse des titres par société", code:"FUSION",
-   url:"https://fusion-three-kappa.vercel.app/",
-   quoi:"Lecture de l’état hypothécaire, regroupement par unité foncière, blocs rédactionnels.",
+  {id:"fusion", t:"titres", code:"FUSION", nom:"Analyse des titres par société", url:"https://fusion-three-kappa.vercel.app/",
+   quoi:"État hypothécaire, regroupement par unité foncière, blocs rédactionnels.",
    cles:"fusion titre etat hypothecaire unite fonciere absorption tup groupe"},
-
-  {f:"titres", nom:"Origine de propriété sur trente ans", code:"TRENTE",
-   url:"https://trente.vercel.app/",
+  {id:"trente", t:"titres", code:"TRENTE", nom:"Origine de propriété sur trente ans", url:"https://trente.vercel.app/",
    quoi:"Reconstituer et vérifier la chaîne trentenaire d’un immeuble.",
    cles:"trentenaire origine propriete chaine titre acte anterieur"},
-
-  {f:"titres", nom:"Filiation cadastrale", code:"HISTO",
-   url:"https://histo-sand.vercel.app/",
-   quoi:"L’histoire d’une parcelle dans les documents de filiation DGFiP : divisions, réunions, remembrements.",
+  {id:"histo", t:"titres", code:"HISTO", nom:"Filiation cadastrale", url:"https://histo-sand.vercel.app/",
+   quoi:"L’histoire d’une parcelle chez la DGFiP : divisions, réunions, remembrements.",
    cles:"filiation dfi genealogie parcelle division reunion remembrement ancien numero"},
-
-  {f:"titres", nom:"Copropriété", code:"COPRO",
-   url:"https://copro-sigma.vercel.app/",
-   quoi:"Analyse du règlement de copropriété et des procès-verbaux d’assemblée générale.",
+  {id:"copro", t:"titres", code:"COPRO", nom:"Copropriété", url:"https://copro-sigma.vercel.app/",
+   quoi:"Analyse du règlement et des procès-verbaux d’assemblée générale.",
    cles:"copropriete reglement edd lot tantieme assemblee generale proces verbal syndic"},
 
-  /* ---- chiffrer ---- */
-  {f:"chiffre", nom:"Frais d’acte et émoluments", code:"COUNTDOWN",
-   url:"https://countdown-kappa-azure.vercel.app/",
-   quoi:"Les calculateurs du cabinet : vente, donation, succession, fiducie, délais.",
+  {id:"countdown", t:"chiffre", code:"COUNTDOWN", nom:"Frais d’acte et émoluments", url:"https://countdown-kappa-azure.vercel.app/",
+   quoi:"Les calculateurs : vente, donation, succession, fiducie, délais.",
    cles:"frais acte emolument taxe calcul provision vente donation succession fiducie delai"},
-
-  {f:"chiffre", nom:"Estimation et négociation", code:"PRIX",
-   url:"https://prix-mu.vercel.app/",
-   quoi:"Valeur vénale d’un bien et argumentaire de négociation, à partir des ventes enregistrées.",
+  {id:"prix", t:"chiffre", code:"PRIX", nom:"Estimation et négociation", url:"https://prix-mu.vercel.app/",
+   quoi:"Valeur vénale et argumentaire, à partir des ventes enregistrées.",
    cles:"prix valeur venale estimation negociation dvf marche travaux budget"},
-
-  {f:"chiffre", nom:"Frais de prêt — particulier", code:"PRÊT",
-   url:"https://pret-particulier.vercel.app/",
+  {id:"pret", t:"chiffre", code:"PRÊT", nom:"Frais de prêt — particulier", url:"https://pret-particulier.vercel.app/",
    quoi:"Coût d’une garantie et frais d’un prêt pour un particulier.",
    cles:"pret particulier garantie hypotheque ppd frais emprunt"},
-
-  {f:"chiffre", nom:"Frais de prêt — professionnel", code:"PRÊT PRO",
-   url:"https://pret-pro.vercel.app/",
+  {id:"pret-pro", t:"chiffre", code:"PRÊT PRO", nom:"Frais de prêt — professionnel", url:"https://pret-pro.vercel.app/",
    quoi:"Même calcul pour un financement professionnel.",
    cles:"pret professionnel entreprise garantie frais emprunt"},
 
-  /* ---- rédiger ---- */
-  {f:"redige", nom:"Clausier notarial", code:"MONETA",
-   url:"https://moneta-navy.vercel.app/",
-   quoi:"La bibliothèque de clauses : découper un acte, comparer deux rédactions, retrouver la bonne formule.",
+  {id:"moneta", t:"redige", code:"MONETA", nom:"Clausier notarial", url:"https://moneta-navy.vercel.app/",
+   quoi:"Découper un acte, comparer deux rédactions, retrouver la bonne formule.",
    cles:"clause clausier redaction promesse acte comparaison bibliotheque trame article"},
-
-  {f:"redige", nom:"Statuts de SCI", code:"PLUME",
-   url:"https://plume-mocha.vercel.app/",
+  {id:"plume", t:"redige", code:"PLUME", nom:"Statuts de SCI", url:"https://plume-mocha.vercel.app/",
    quoi:"Rédaction des statuts d’une société civile immobilière.",
    cles:"statuts sci societe civile constitution associes gerant"},
+  {id:"consult", t:"redige", code:"CONSULT", nom:"Consultation écrite", url:"https://consult-sand.vercel.app/", pret:false,
+   quoi:"Transformer un échange oral avec le client en consultation écrite. Chantier en attente.",
+   cles:"consultation ecrite client entretien note"},
 
-  /* ---- la séance ---- */
-  {f:"seance", nom:"Outils de séance", code:"COFFEE",
-   url:"https://coffee-taupe-gamma.vercel.app/",
-   quoi:"Les réponses aux imprévus d’un rendez-vous : recevabilité d’une pièce, procuration, légalisation, note d’honoraires.",
+  {id:"coffee", t:"seance", code:"COFFEE", nom:"Outils de séance", url:"https://coffee-taupe-gamma.vercel.app/",
+   quoi:"Les imprévus d’un rendez-vous : recevabilité d’une pièce, procuration, légalisation, honoraires.",
    cles:"seance rendez-vous piece identite procuration legalisation apostille honoraires imprevu"},
-
-  {f:"seance", nom:"Les outils sur téléphone", code:"FIDAL APPS",
-   url:"https://fidal-apps.vercel.app/",
-   quoi:"Le lanceur à installer sur l’écran d’accueil du téléphone — il embarque aussi la radio et la revue de presse.",
+  {id:"fidal-apps", t:"seance", code:"FIDAL APPS", nom:"Les outils sur téléphone", url:"https://fidal-apps.vercel.app/",
+   quoi:"Le lanceur à installer sur l’écran d’accueil — il embarque la radio et la revue de presse.",
    cles:"telephone mobile application lanceur installer radio presse iphone"},
-
-  {f:"seance", nom:"La cave du cabinet", code:"PARTAGE",
-   url:"https://partage-amiable.vercel.app/",
-   quoi:"Les bouteilles de la cave, leurs notes et les avis de chacun.",
-   cles:"cave vin bouteille partage amiable degustation"},
-
-  {f:"seance", nom:"Carte des outils", code:"CARTO",
-   url:"https://carto-six.vercel.app/",
+  {id:"carto", t:"seance", code:"CARTO", nom:"Carte des outils", url:"https://carto-six.vercel.app/",
    quoi:"Qui appelle qui, ce qui est abouti, ce qui est en chantier.",
-   cles:"carte cartographie schema avancement chantier suite organigramme"}
+   cles:"carte cartographie schema avancement chantier suite organigramme"},
+  {id:"partage", t:"seance", code:"PARTAGE", nom:"La cave", url:"https://partage-amiable.vercel.app/",
+   quoi:"Les bouteilles, leurs notes et les avis de chacun.",
+   cles:"cave vin bouteille partage amiable degustation"}
 ];
 
-/* ---------------- construction de la page ---------------- */
-const zone = document.getElementById("familles");
-const sansAccent = t => t.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+/* ==================================================================
+   2. RÉGLAGES PARTAGÉS
+   Base mutualisée, par l’interface de PRIX. Valeur enregistrée :
+   { masques:[identifiants], sel:"hex", empreinte:"hex", maj:"ISO" }
+================================================================== */
+const API = "https://prix-mu.vercel.app/api/parametres?outil=phare&cle=visibilite";
+let reglages = null;                      /* null tant que rien n’est lu */
+let masques  = OUTILS.filter(o=>o.pret===false).map(o=>o.id);
 
-FAMILLES.forEach(f=>{
-  const sec = document.createElement("section");
-  sec.className = "famille";
-  sec.dataset.famille = f.id;
-  sec.innerHTML =
-    `<h2><i style="background:${f.couleur}"></i>${f.titre}</h2>
-     <p class="intro">${f.intro}</p>
-     <div class="liste"></div>`;
-  const liste = sec.querySelector(".liste");
-  OUTILS.filter(o=>o.f===f.id).forEach(o=>{
-    const a = document.createElement("a");
-    a.className = "outil";
-    a.href = o.url;
-    a.target = "_blank";
-    a.rel = "noopener";
-    a.style.color = f.couleur;          /* sert au filet au survol */
-    a.dataset.cherche = sansAccent([o.nom,o.code,o.quoi,o.cles].join(" "));
-    a.innerHTML =
-      `<span class="titre"><b>${o.nom}</b><code>${o.code}</code></span>
-       <span class="quoi">${o.quoi}</span>`;
-    liste.appendChild(a);
+async function lireReglages(){
+  try{
+    const r = await fetch(API,{cache:"no-store"});
+    if(!r.ok) return;
+    const d = await r.json();
+    if(d && d.valeur && typeof d.valeur === "object"){
+      reglages = d.valeur;
+      if(Array.isArray(reglages.masques)) masques = reglages.masques.slice();
+    }
+  }catch(e){ /* base muette : on garde les valeurs par défaut */ }
+}
+async function ecrireReglages(){
+  const valeur = Object.assign({}, reglages||{}, {masques, maj:new Date().toISOString()});
+  reglages = valeur;
+  const r = await fetch(API,{method:"PUT",headers:{"content-type":"application/json"},body:JSON.stringify(valeur)});
+  if(!r.ok) throw new Error("enregistrement refusé ("+r.status+")");
+}
+
+/* ------- code d’administrateur : seule l’empreinte est conservée ------- */
+const hexDe = buf => [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("");
+const octetsDe = hex => new Uint8Array(hex.match(/.{2}/g).map(h=>parseInt(h,16)));
+async function empreinteDe(code, selHex){
+  const cle = await crypto.subtle.importKey("raw", new TextEncoder().encode(code), "PBKDF2", false, ["deriveBits"]);
+  const bits = await crypto.subtle.deriveBits(
+    {name:"PBKDF2", salt:octetsDe(selHex), iterations:150000, hash:"SHA-256"}, cle, 256);
+  return hexDe(bits);
+}
+const selNeuf = () => hexDe(crypto.getRandomValues(new Uint8Array(16)));
+
+/* ==================================================================
+   3. CONSTRUCTION DE LA CONSTELLATION
+================================================================== */
+const NS = "http://www.w3.org/2000/svg";
+const carte = document.getElementById("carte");
+const repli = document.getElementById("repli");
+const sansAccent = t => t.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+const el = (n,a={}) => { const e=document.createElementNS(NS,n); for(const k in a) e.setAttribute(k,a[k]); return e; };
+const melange = (hex,f,vers255)=>{
+  const n=parseInt(hex.slice(1),16), c=[n>>16,(n>>8)&255,n&255];
+  return "rgb("+c.map(x=> Math.round(vers255 ? x+(255-x)*f : x*(1-f))).join(",")+")";
+};
+const estAdmin = () => document.body.classList.contains("mode-admin");
+const estMasque = id => masques.includes(id);
+let satellites = [];
+
+function construire(){
+  carte.textContent = ""; repli.textContent = ""; satellites = [];
+
+  const defs = el("defs"); carte.appendChild(defs);
+  THEMES.forEach(t=>{
+    const g = el("radialGradient",{id:"bille-"+t.id, cx:"34%", cy:"30%", r:"78%"});
+    g.appendChild(el("stop",{offset:"0%",  "stop-color":melange(t.couleur,.55,true)}));
+    g.appendChild(el("stop",{offset:"52%", "stop-color":t.couleur}));
+    g.appendChild(el("stop",{offset:"100%","stop-color":melange(t.couleur,.52,false)}));
+    defs.appendChild(g);
+    const h = el("radialGradient",{id:"halo-"+t.id});
+    h.appendChild(el("stop",{offset:"0%",  "stop-color":t.couleur,"stop-opacity":".20"}));
+    h.appendChild(el("stop",{offset:"100%","stop-color":t.couleur,"stop-opacity":"0"}));
+    defs.appendChild(h);
   });
-  zone.appendChild(sec);
-});
+
+  /* ce qui est affiché : tout pour l’administrateur, le reste filtré */
+  const montres = t => OUTILS.filter(o=>o.t===t && (estAdmin() || !estMasque(o.id)));
+  const themesActifs = THEMES.filter(t=> montres(t.id).length);
+
+  /* brins entre thèmes, limités à ceux qui restent */
+  [[0,3],[3,1],[3,2],[3,4],[1,4]].forEach(([a,b])=>{
+    const A=THEMES[a], B=THEMES[b];
+    if(!themesActifs.includes(A) || !themesActifs.includes(B)) return;
+    carte.appendChild(el("path",{class:"brin-long",
+      d:`M${A.cx},${A.cy} Q${(A.cx+B.cx)/2},${(A.cy+B.cy)/2-40} ${B.cx},${B.cy}`}));
+  });
+
+  themesActifs.forEach(t=>{
+    const grappe = el("g",{class:"grappe"});
+    grappe.dataset.theme = t.id;
+    carte.appendChild(grappe);
+    grappe.appendChild(el("circle",{cx:t.cx, cy:t.cy, r:t.r+54, fill:`url(#halo-${t.id})`}));
+
+    const liste = montres(t.id);
+    const pas = 360 / liste.length;
+    liste.forEach((o,i)=>{
+      const a = (t.depart + i*pas) * Math.PI/180;
+      o._x = t.cx + Math.cos(a)*t.r;
+      o._y = t.cy + Math.sin(a)*t.r;
+      grappe.appendChild(el("line",{class:"brin", x1:t.cx, y1:t.cy, x2:o._x, y2:o._y,
+        stroke:t.couleur, "stroke-opacity":".34"}));
+    });
+
+    const coeur = el("g");
+    coeur.appendChild(el("circle",{cx:t.cx, cy:t.cy, r:54, fill:"#10263B",
+      stroke:t.couleur, "stroke-opacity":".55", "stroke-width":"1.5"}));
+    const nom = el("text",{class:"theme-nom", x:t.cx, y:t.cy-3}); nom.textContent = t.nom;
+    const sous= el("text",{class:"theme-sous",x:t.cx, y:t.cy+14}); sous.textContent = t.sous;
+    coeur.appendChild(nom); coeur.appendChild(sous);
+    grappe.appendChild(coeur);
+
+    liste.forEach((o,i)=>{
+      const a = el("a",{class:"satellite"+(estMasque(o.id)?" masque":""), href:o.url,
+                        target:"_blank", rel:"noopener", "aria-label":o.nom+" — "+o.code});
+      a.style.setProperty("--duree",(7+(i%4)*1.3)+"s");
+      a.style.setProperty("--retard",(i*0.7)+"s");
+      a.dataset.cherche = sansAccent([o.nom,o.code,o.quoi,o.cles].join(" "));
+      a.dataset.theme = t.id;
+      a.appendChild(el("circle",{class:"anneau", cx:o._x, cy:o._y, r:38, fill:"none",
+        stroke:t.couleur, "stroke-width":"1.5"}));
+      a.appendChild(el("circle",{class:"bille", cx:o._x, cy:o._y, r:29,
+        fill:`url(#bille-${t.id})`, style:`transform-origin:${o._x}px ${o._y}px`}));
+      a.appendChild(el("ellipse",{cx:o._x-8, cy:o._y-11, rx:9, ry:6, fill:"#fff",
+        "fill-opacity":".22", transform:`rotate(-28 ${o._x-8} ${o._y-11})`, "pointer-events":"none"}));
+      const et = el("text",{class:"etiquette", x:o._x, y:o._y+47}); et.textContent = o.code;
+      a.appendChild(et);
+      a.addEventListener("mouseenter", ()=>montrer(o,a));
+      a.addEventListener("focus",      ()=>montrer(o,a));
+      a.addEventListener("mouseleave", cacher);
+      a.addEventListener("blur",       cacher);
+      grappe.appendChild(a);
+      satellites.push({o, noeud:a});
+    });
+
+    /* même contenu, en liste, pour les écrans étroits */
+    const h2 = document.createElement("h2");
+    h2.innerHTML = `<i style="background:${t.couleur}"></i>${t.nom} <span style="color:#7D93A7;font-size:13px">${t.sous}</span>`;
+    h2.dataset.theme = t.id;
+    repli.appendChild(h2);
+    liste.forEach(o=>{
+      const l = document.createElement("a");
+      l.href=o.url; l.target="_blank"; l.rel="noopener";
+      l.style.borderLeftColor = t.couleur;
+      l.dataset.cherche = sansAccent([o.nom,o.code,o.quoi,o.cles].join(" "));
+      l.dataset.theme = t.id;
+      l.innerHTML = `<b>${o.nom}</b><span>${o.quoi}</span>`;
+      repli.appendChild(l);
+    });
+  });
+  filtrer();
+}
+
+/* ---------------- cartouche ---------------- */
+const cartouche = document.getElementById("cartouche");
+const ciel = document.getElementById("ciel");
+function montrer(o, noeud){
+  cartouche.querySelector("b").textContent = o.nom;
+  cartouche.querySelector("span").textContent = o.quoi;
+  cartouche.querySelector("i").textContent = estMasque(o.id) ? "Masqué aux collaborateurs" : "Cliquer pour ouvrir";
+  cartouche.style.borderLeftColor = THEMES.find(x=>x.id===o.t).couleur;
+  const r = noeud.getBoundingClientRect(), c = ciel.getBoundingClientRect();
+  let x = r.left + r.width/2 - c.left;
+  cartouche.style.left = Math.max(145, Math.min(c.width-145, x))+"px";
+  cartouche.style.top  = (r.bottom - c.top + 10)+"px";
+  cartouche.classList.add("visible");
+}
+function cacher(){ cartouche.classList.remove("visible"); }
 
 /* ---------------- recherche ---------------- */
-const saisie  = document.getElementById("q");
-const vide    = document.getElementById("vide");
-const compte  = document.getElementById("compte");
-const sections= [...document.querySelectorAll(".famille")];
-const cartes  = [...document.querySelectorAll(".outil")];
+const saisie = document.getElementById("q");
+const vide   = document.getElementById("vide");
+const compte = document.getElementById("compte");
 
 function filtrer(){
   const mots = sansAccent(saisie.value.trim()).split(/\s+/).filter(Boolean);
-  let visibles = 0;
-  cartes.forEach(c=>{
-    const ok = mots.every(m => c.dataset.cherche.includes(m));
-    c.hidden = !ok;
-    if(ok) visibles++;
+  const vus = new Set(); let n = 0;
+  satellites.forEach(({o,noeud})=>{
+    const ok = mots.every(m => noeud.dataset.cherche.includes(m));
+    noeud.classList.toggle("eteint", !ok);
+    if(ok){ n++; vus.add(o.t); }
   });
-  sections.forEach(s=>{
-    s.hidden = ![...s.querySelectorAll(".outil")].some(c=>!c.hidden);
-  });
-  vide.style.display = visibles ? "none" : "block";
-  compte.textContent = visibles
-    ? visibles + (visibles>1 ? " outils trouvés" : " outil trouvé")
-    : "Aucun outil ne correspond";
+  carte.querySelectorAll(".grappe").forEach(g=>
+    g.classList.toggle("eteint", mots.length && !vus.has(g.dataset.theme)));
+  const lignes = [...repli.querySelectorAll("a")];
+  lignes.forEach(l=> l.hidden = !mots.every(m => l.dataset.cherche.includes(m)));
+  repli.querySelectorAll("h2").forEach(h=>
+    h.hidden = !lignes.some(l=> l.dataset.theme===h.dataset.theme && !l.hidden));
+  vide.style.display = n ? "none" : "block";
+  compte.textContent = n ? n + (n>1 ? " outils trouvés" : " outil trouvé") : "Aucun outil ne correspond";
+  cacher();
 }
-
 saisie.addEventListener("input", filtrer);
 saisie.addEventListener("keydown", e=>{
-  if(e.key === "Enter"){
-    const premier = cartes.find(c=>!c.hidden);
-    if(premier) window.open(premier.href, "_blank", "noopener");
+  if(e.key==="Enter"){
+    const premier = satellites.find(s=>!s.noeud.classList.contains("eteint"));
+    if(premier) window.open(premier.o.url,"_blank","noopener");
   }
-  if(e.key === "Escape"){ saisie.value=""; filtrer(); }
+  if(e.key==="Escape"){ saisie.value=""; filtrer(); }
 });
-
-document.querySelectorAll(".pistes button").forEach(b=>{
-  b.addEventListener("click", ()=>{ saisie.value = b.dataset.mot; filtrer(); saisie.focus(); });
-});
-
-/* La barre oblique du clavier amène au champ, comme dans un moteur de recherche. */
 document.addEventListener("keydown", e=>{
-  if(e.key === "/" && document.activeElement !== saisie){ e.preventDefault(); saisie.focus(); saisie.select(); }
+  if(e.key==="/" && document.activeElement!==saisie){ e.preventDefault(); saisie.focus(); saisie.select(); }
 });
 
-filtrer();
+/* ==================================================================
+   4. ADMINISTRATION
+================================================================== */
+const voile   = document.getElementById("voile");
+const code1   = document.getElementById("code1");
+const code2   = document.getElementById("code2");
+const erreur  = document.getElementById("boite-erreur");
+const bTitre  = document.getElementById("boite-titre");
+const bTexte  = document.getElementById("boite-texte");
+const etatAdm = document.getElementById("admin-etat");
+let modeBoite = "ouvrir";          /* ouvrir | definir | changer */
+
+function ouvrirBoite(mode){
+  modeBoite = mode;
+  code1.value = ""; code2.value = ""; erreur.textContent = "";
+  const neuf = (mode !== "ouvrir");
+  code2.hidden = !neuf;
+  code1.placeholder = neuf ? "Nouveau code" : "Code";
+  bTitre.textContent = mode === "definir" ? "Définir le code d’administrateur"
+                     : mode === "changer" ? "Changer le code" : "Code d’administrateur";
+  bTexte.textContent = neuf
+    ? "Choisissez un code long, qui ne soit pas un mot courant. Seule son empreinte est conservée : il ne pourra pas être retrouvé, seulement remplacé."
+    : "Saisissez le code pour gérer ce qui est visible par les collaborateurs.";
+  voile.classList.add("ouvert");
+  setTimeout(()=>code1.focus(), 50);
+}
+function fermerBoite(){ voile.classList.remove("ouvert"); }
+
+document.getElementById("ouvrir-admin").addEventListener("click", async ()=>{
+  if(!window.crypto || !crypto.subtle){
+    alert("L’administration ne fonctionne qu’en ligne, en connexion sécurisée.");
+    return;
+  }
+  if(reglages === null) await lireReglages();
+  ouvrirBoite(reglages && reglages.empreinte ? "ouvrir" : "definir");
+});
+document.getElementById("boite-annuler").addEventListener("click", fermerBoite);
+voile.addEventListener("click", e=>{ if(e.target===voile) fermerBoite(); });
+[code1,code2].forEach(c=> c.addEventListener("keydown", e=>{ if(e.key==="Enter") valider(); }));
+document.getElementById("boite-valider").addEventListener("click", ()=>valider());
+
+async function valider(){
+  const code = code1.value;
+  erreur.textContent = "";
+  if(modeBoite === "ouvrir"){
+    if(!reglages || !reglages.empreinte || !reglages.sel){
+      /* aucun code n’est encore enregistré : on bascule sur la définition */
+      ouvrirBoite("definir"); return;
+    }
+    const essai = await empreinteDe(code, reglages.sel);
+    if(essai !== reglages.empreinte){ erreur.textContent = "Code refusé."; code1.select(); return; }
+    fermerBoite(); entrerAdmin();
+    return;
+  }
+  if(code.length < 10){ erreur.textContent = "Dix caractères au minimum."; return; }
+  if(code !== code2.value){ erreur.textContent = "Les deux saisies diffèrent."; return; }
+  const sel = selNeuf();
+  const emp = await empreinteDe(code, sel);
+  try{
+    reglages = Object.assign({}, reglages||{}, {sel, empreinte:emp});
+    await ecrireReglages();
+  }catch(e){ erreur.textContent = "Le code n’a pas pu être enregistré ("+e.message+")."; return; }
+  fermerBoite();
+  if(modeBoite === "definir") entrerAdmin(); else etat("Code remplacé.");
+}
+
+function entrerAdmin(){
+  sessionStorage.setItem("phare-admin","1");
+  document.body.classList.add("mode-admin");
+  construireAdmin();
+  construire();
+}
+document.getElementById("sortir-admin").addEventListener("click", ()=>{
+  sessionStorage.removeItem("phare-admin");
+  document.body.classList.remove("mode-admin");
+  construire();
+});
+document.getElementById("changer-code").addEventListener("click", ()=>ouvrirBoite("changer"));
+
+function etat(texte){
+  etatAdm.textContent = texte;
+  clearTimeout(etat._t);
+  etat._t = setTimeout(()=>{ etatAdm.textContent = ""; }, 6000);
+}
+
+function construireAdmin(){
+  const zone = document.getElementById("admin-listes");
+  zone.textContent = "";
+  THEMES.forEach(t=>{
+    const h = document.createElement("h4");
+    h.innerHTML = `<i style="background:${t.couleur}"></i>${t.nom}`;
+    zone.appendChild(h);
+    OUTILS.filter(o=>o.t===t.id).forEach(o=>{
+      const l = document.createElement("label");
+      const c = document.createElement("input");
+      c.type = "checkbox"; c.checked = !estMasque(o.id);
+      c.addEventListener("change", async ()=>{
+        const avant = masques.slice();
+        masques = c.checked ? masques.filter(x=>x!==o.id) : masques.concat([o.id]);
+        construire();
+        try{ await ecrireReglages(); etat("Enregistré à "+new Date().toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})+"."); }
+        catch(e){
+          masques = avant; c.checked = !estMasque(o.id); construire();
+          etat("Rien n’a été enregistré : "+e.message);
+        }
+      });
+      const s = document.createElement("span");
+      s.innerHTML = `${o.nom}<em>${o.code}</em>`;
+      l.appendChild(c); l.appendChild(s);
+      zone.appendChild(l);
+    });
+  });
+}
+
+/* ==================================================================
+   5. DÉMARRAGE
+================================================================== */
+construire();                 /* affichage immédiat, sans attendre la base */
+lireReglages().then(()=>{
+  if(sessionStorage.getItem("phare-admin")==="1" && reglages && reglages.empreinte){
+    document.body.classList.add("mode-admin");
+    construireAdmin();
+  }
+  construire();
+});
 </script>
 </body>
 </html>
