@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PHARE — Les outils de FIDAL Notaires</title>
+<meta name="description" content="Point d’entrée des outils du cabinet : chercher un besoin, ouvrir l’outil.">
+<meta name="theme-color" content="#0F2238">
+<script src="https://connexion-omega.vercel.app/bandeau.js" defer></script>
+<style>
+/* ------------------------------------------------------------------
+   PHARE — portail d’accueil des outils de FIDAL Notaires
+   Charte FIDAL v2.2 : Georgia (titres) / Segoe UI (texte)
+   bleu nuit #0F2238 · canard #33838B · orange #FF982D
+   carmin #A01040 · cyan #6DD5DC · jaune #FFC900
+   Fichier unique, aucune dépendance.
+------------------------------------------------------------------ */
+:root{
+  --nuit:#0F2238;
+  --canard:#33838B;
+  --orange:#FF982D;
+  --carmin:#A01040;
+  --cyan:#6DD5DC;
+  --jaune:#FFC900;
+  --papier:#F7F8F9;
+  --blanc:#FFFFFF;
+  --encre:#1B2A3A;
+  --gris:#5E6B79;
+  --filet:#DCE2E8;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--papier);
+  color:var(--encre);
+  font:16px/1.55 "Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit}
+.enveloppe{max-width:1120px;margin:0 auto;padding:0 28px}
+
+/* ---------- en-tête ---------- */
+header{background:var(--nuit);color:#fff}
+.barre{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:18px 0}
+.marque{display:flex;align-items:center;gap:14px;text-decoration:none}
+.trait{width:3px;height:40px;background:var(--jaune);border-radius:2px}
+.marque b{display:block;font-family:Georgia,"Times New Roman",serif;font-size:20px;letter-spacing:.14em;font-weight:400;line-height:1.1}
+.marque span{display:block;font-size:11px;letter-spacing:.3em;color:var(--cyan);line-height:1.6}
+.raccourcis{display:flex;gap:4px;flex-wrap:wrap}
+.raccourcis a{
+  text-decoration:none;color:#C9D4DE;font-size:13.5px;padding:7px 12px;border-radius:4px;
+  border:1px solid transparent;white-space:nowrap;
+}
+.raccourcis a:hover,.raccourcis a:focus-visible{color:#fff;border-color:#2C4257;background:#152C44}
+
+/* ---------- recherche ---------- */
+.chapeau{background:var(--nuit);color:#fff;padding:14px 0 46px}
+.chapeau h1{
+  font-family:Georgia,serif;font-weight:400;font-size:clamp(26px,3.4vw,38px);
+  line-height:1.25;margin:0 0 6px;max-width:19em;
+}
+.chapeau p{margin:0 0 26px;color:#A9BACA;font-size:15.5px;max-width:46em}
+.champ{position:relative;max-width:620px}
+.champ input{
+  width:100%;padding:16px 18px 16px 50px;font-size:17px;font-family:inherit;color:var(--encre);
+  background:#fff;border:2px solid transparent;border-radius:6px;outline:none;
+}
+.champ input:focus{border-color:var(--jaune)}
+.champ svg{position:absolute;left:17px;top:17px;width:20px;height:20px;stroke:var(--gris);fill:none;stroke-width:2}
+.pistes{margin:14px 0 0;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.pistes em{font-style:normal;color:#8DA0B2;font-size:13px;margin-right:2px}
+.pistes button{
+  font:inherit;font-size:13px;color:#D7E3EC;background:transparent;cursor:pointer;
+  border:1px solid #2C4257;border-radius:999px;padding:4px 12px;
+}
+.pistes button:hover,.pistes button:focus-visible{background:#152C44;color:#fff;border-color:#3D5873}
+
+/* ---------- familles ---------- */
+main{padding:38px 0 10px}
+.famille{margin:0 0 34px}
+.famille h2{
+  font-family:Georgia,serif;font-weight:400;font-size:19px;margin:0 0 2px;
+  display:flex;align-items:center;gap:10px;
+}
+.famille h2 i{display:block;width:22px;height:3px;border-radius:2px;background:var(--canard)}
+.famille p.intro{margin:0 0 14px 32px;color:var(--gris);font-size:14px}
+
+.liste{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:2px 26px}
+.outil{
+  display:block;text-decoration:none;padding:13px 14px 14px 16px;
+  border-left:3px solid var(--filet);background:transparent;
+}
+.outil:hover,.outil:focus-visible{background:var(--blanc);border-left-color:currentColor;outline:none}
+.outil .titre{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+.outil .titre b{font-weight:600;font-size:15.5px;color:var(--encre)}
+.outil .titre code{
+  font-family:inherit;font-size:11px;letter-spacing:.13em;color:var(--gris);
+  border:1px solid var(--filet);border-radius:3px;padding:1px 6px;background:var(--blanc);
+}
+.outil .quoi{margin:3px 0 0;font-size:13.5px;color:var(--gris);line-height:1.45}
+.outil:hover .quoi,.outil:focus-visible .quoi{color:#44525F}
+
+/* ---------- rien trouvé ---------- */
+.vide{display:none;padding:26px 0 40px;border-top:1px solid var(--filet)}
+.vide b{display:block;font-family:Georgia,serif;font-size:18px;font-weight:400;margin-bottom:6px}
+.vide p{margin:0;color:var(--gris);font-size:14.5px}
+
+/* ---------- pied ---------- */
+footer{border-top:1px solid var(--filet);margin-top:20px;padding:26px 0 46px;color:var(--gris);font-size:13.5px}
+footer .rangee{display:flex;justify-content:space-between;gap:28px;flex-wrap:wrap}
+footer a{color:var(--canard)}
+footer p{margin:0 0 6px}
+
+@media (max-width:640px){
+  .enveloppe{padding:0 18px}
+  .barre{flex-direction:column;align-items:flex-start;gap:12px}
+  .liste{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="enveloppe">
+    <div class="barre">
+      <a class="marque" href="./" aria-label="PHARE, accueil">
+        <span class="trait" aria-hidden="true"></span>
+        <span><b>FIDAL</b><span>NOTAIRES</span></span>
+      </a>
+      <nav class="raccourcis" aria-label="Pages transversales">
+        <a href="https://connexion-omega.vercel.app/" target="_blank" rel="noopener">Ouvrir la journée</a>
+        <a href="https://carto-six.vercel.app/" target="_blank" rel="noopener">Carte des outils</a>
+        <a href="https://fidal-apps.vercel.app/" target="_blank" rel="noopener">Sur téléphone</a>
+      </nav>
+    </div>
+  </div>
+
+  <div class="enveloppe chapeau">
+    <h1>Les outils du cabinet, en un seul endroit.</h1>
+    <p>Dites ce que vous cherchez — une parcelle, des frais d’acte, un règlement de copropriété — la liste se réduit à mesure que vous tapez. Entrée ouvre le premier résultat.</p>
+
+    <div class="champ">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5 L21 21"/></svg>
+      <input id="q" type="search" autocomplete="off" autofocus
+             placeholder="Chercher un besoin, un outil, une commune…"
+             aria-label="Chercher un outil" aria-describedby="compte">
+    </div>
+
+    <div class="pistes">
+      <em>Par exemple</em>
+      <button type="button" data-mot="termites">termites</button>
+      <button type="button" data-mot="frais">frais d’acte</button>
+      <button type="button" data-mot="urbanisme">urbanisme</button>
+      <button type="button" data-mot="copropriété">copropriété</button>
+      <button type="button" data-mot="plan">plan cadastral</button>
+      <button type="button" data-mot="clause">clause</button>
+    </div>
+  </div>
+</header>
+
+<main class="enveloppe">
+  <p id="compte" class="visually-hidden" aria-live="polite" style="position:absolute;left:-9999px"></p>
+  <div id="familles"></div>
+
+  <div class="vide" id="vide">
+    <b>Aucun outil ne correspond.</b>
+    <p>Essayez un mot plus simple — « parcelle », « titre », « prêt ». Si l’outil qui vous manque n’existe pas encore, dites-le à Jean-François Dumetz : la suite se construit sur vos besoins.</p>
+  </div>
+</main>
+
+<footer>
+  <div class="enveloppe rangee">
+    <div>
+      <p>Chaque outil s’ouvre dans un nouvel onglet.</p>
+      <p>Certains lisent vos dossiers Drive : passez d’abord par <a href="https://connexion-omega.vercel.app/" target="_blank" rel="noopener">Ouvrir la journée</a>.</p>
+    </div>
+    <div>
+      <p>Une idée, une anomalie : écrivez à Jean-François Dumetz.</p>
+      <p>Outils internes FIDAL Notaires Paris — usage réservé au cabinet.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ------------------------------------------------------------------
+   Le contenu du portail. Pour ajouter un outil : une ligne ici.
+   cles = mots que les collaborateurs taperont (la recherche les lit aussi).
+------------------------------------------------------------------ */
+const FAMILLES = [
+  {id:"bien",   titre:"Le bien et son environnement", couleur:"#33838B",
+   intro:"Tout ce qui se vérifie à partir d’une parcelle ou d’une commune."},
+  {id:"titres", titre:"Les titres et l’origine de propriété", couleur:"#A01040",
+   intro:"Reconstituer une propriété, analyser un portefeuille, remonter une chaîne."},
+  {id:"chiffre",titre:"Chiffrer et calculer", couleur:"#FF982D",
+   intro:"Frais, émoluments, valeur d’un bien, coût d’un prêt."},
+  {id:"redige", titre:"Rédiger l’acte", couleur:"#0F2238",
+   intro:"Clauses, statuts, trames."},
+  {id:"seance", titre:"La séance et le quotidien", couleur:"#6DD5DC",
+   intro:"Ce qui sert pendant un rendez-vous, et le reste."}
+];
+
+const OUTILS = [
+  /* ---- le bien ---- */
+  {f:"bien", nom:"Fiche de parcelle et de bâti", code:"REDPAR",
+   url:"https://redpar-frontend.vercel.app/",
+   quoi:"Toutes les parcelles d’une société ou d’une personne, surfaces, bâti, propriétaires.",
+   cles:"parcelle cadastre bati siren société propriétaire surface commune"},
+
+  {f:"bien", nom:"Règles d’urbanisme", code:"URBA",
+   url:"https://urba-lemon.vercel.app/",
+   quoi:"Zonage, servitudes et prescriptions applicables à une parcelle.",
+   cles:"urbanisme plu zonage servitude gpu constructible"},
+
+  {f:"bien", nom:"Termites et mérule", code:"XYLO",
+   url:"https://xylo-phi.vercel.app/",
+   quoi:"Arrêtés préfectoraux applicables à une commune ou à une parcelle.",
+   cles:"termites merule arrete prefectoral insecte xylophage diagnostic"},
+
+  {f:"bien", nom:"Certificat d’urbanisme",code:"CERTIF",
+   url:"https://certif-bay.vercel.app/",
+   quoi:"Demande de certificat d’information (CUa) et suivi.",
+   cles:"certificat urbanisme cua mairie demande"},
+
+  {f:"bien", nom:"Plans cadastraux coloriés", code:"PAINT",
+   url:"https://paint-blue.vercel.app/",
+   quoi:"Colorier les parcelles d’un dossier et sortir l’extrait officiel.",
+   cles:"plan cadastral coloriage extrait dgfip carte dessin annexe"},
+
+  {f:"bien", nom:"Relevés de matrice cadastrale", code:"MATRICE",
+   url:"https://matrice-black.vercel.app/",
+   quoi:"Demandes aux services du cadastre, et suivi de ce qui est parti.",
+   cles:"matrice cadastrale sdif ptgc releve demande extrait"},
+
+  /* ---- les titres ---- */
+  {f:"titres", nom:"Audit de portefeuille immobilier", code:"MARTEAU",
+   url:"https://marteau-rho.vercel.app/",
+   quoi:"Le dossier complet d’un portefeuille : il interroge les autres outils et compile le rapport.",
+   cles:"audit portefeuille rapport dossier immeuble societe"},
+
+  {f:"titres", nom:"Analyse des titres par société", code:"FUSION",
+   url:"https://fusion-three-kappa.vercel.app/",
+   quoi:"Lecture de l’état hypothécaire, regroupement par unité foncière, blocs rédactionnels.",
+   cles:"fusion titre etat hypothecaire unite fonciere absorption tup groupe"},
+
+  {f:"titres", nom:"Origine de propriété sur trente ans", code:"TRENTE",
+   url:"https://trente.vercel.app/",
+   quoi:"Reconstituer et vérifier la chaîne trentenaire d’un immeuble.",
+   cles:"trentenaire origine propriete chaine titre acte anterieur"},
+
+  {f:"titres", nom:"Filiation cadastrale", code:"HISTO",
+   url:"https://histo-sand.vercel.app/",
+   quoi:"L’histoire d’une parcelle dans les documents de filiation DGFiP : divisions, réunions, remembrements.",
+   cles:"filiation dfi genealogie parcelle division reunion remembrement ancien numero"},
+
+  {f:"titres", nom:"Copropriété", code:"COPRO",
+   url:"https://copro-sigma.vercel.app/",
+   quoi:"Analyse du règlement de copropriété et des procès-verbaux d’assemblée générale.",
+   cles:"copropriete reglement edd lot tantieme assemblee generale proces verbal syndic"},
+
+  /* ---- chiffrer ---- */
+  {f:"chiffre", nom:"Frais d’acte et émoluments", code:"COUNTDOWN",
+   url:"https://countdown-kappa-azure.vercel.app/",
+   quoi:"Les calculateurs du cabinet : vente, donation, succession, fiducie, délais.",
+   cles:"frais acte emolument taxe calcul provision vente donation succession fiducie delai"},
+
+  {f:"chiffre", nom:"Estimation et négociation", code:"PRIX",
+   url:"https://prix-mu.vercel.app/",
+   quoi:"Valeur vénale d’un bien et argumentaire de négociation, à partir des ventes enregistrées.",
+   cles:"prix valeur venale estimation negociation dvf marche travaux budget"},
+
+  {f:"chiffre", nom:"Frais de prêt — particulier", code:"PRÊT",
+   url:"https://pret-particulier.vercel.app/",
+   quoi:"Coût d’une garantie et frais d’un prêt pour un particulier.",
+   cles:"pret particulier garantie hypotheque ppd frais emprunt"},
+
+  {f:"chiffre", nom:"Frais de prêt — professionnel", code:"PRÊT PRO",
+   url:"https://pret-pro.vercel.app/",
+   quoi:"Même calcul pour un financement professionnel.",
+   cles:"pret professionnel entreprise garantie frais emprunt"},
+
+  /* ---- rédiger ---- */
+  {f:"redige", nom:"Clausier notarial", code:"MONETA",
+   url:"https://moneta-navy.vercel.app/",
+   quoi:"La bibliothèque de clauses : découper un acte, comparer deux rédactions, retrouver la bonne formule.",
+   cles:"clause clausier redaction promesse acte comparaison bibliotheque trame article"},
+
+  {f:"redige", nom:"Statuts de SCI", code:"PLUME",
+   url:"https://plume-mocha.vercel.app/",
+   quoi:"Rédaction des statuts d’une société civile immobilière.",
+   cles:"statuts sci societe civile constitution associes gerant"},
+
+  /* ---- la séance ---- */
+  {f:"seance", nom:"Outils de séance", code:"COFFEE",
+   url:"https://coffee-taupe-gamma.vercel.app/",
+   quoi:"Les réponses aux imprévus d’un rendez-vous : recevabilité d’une pièce, procuration, légalisation, note d’honoraires.",
+   cles:"seance rendez-vous piece identite procuration legalisation apostille honoraires imprevu"},
+
+  {f:"seance", nom:"Les outils sur téléphone", code:"FIDAL APPS",
+   url:"https://fidal-apps.vercel.app/",
+   quoi:"Le lanceur à installer sur l’écran d’accueil du téléphone — il embarque aussi la radio et la revue de presse.",
+   cles:"telephone mobile application lanceur installer radio presse iphone"},
+
+  {f:"seance", nom:"La cave du cabinet", code:"PARTAGE",
+   url:"https://partage-amiable.vercel.app/",
+   quoi:"Les bouteilles de la cave, leurs notes et les avis de chacun.",
+   cles:"cave vin bouteille partage amiable degustation"},
+
+  {f:"seance", nom:"Carte des outils", code:"CARTO",
+   url:"https://carto-six.vercel.app/",
+   quoi:"Qui appelle qui, ce qui est abouti, ce qui est en chantier.",
+   cles:"carte cartographie schema avancement chantier suite organigramme"}
+];
+
+/* ---------------- construction de la page ---------------- */
+const zone = document.getElementById("familles");
+const sansAccent = t => t.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+
+FAMILLES.forEach(f=>{
+  const sec = document.createElement("section");
+  sec.className = "famille";
+  sec.dataset.famille = f.id;
+  sec.innerHTML =
+    `<h2><i style="background:${f.couleur}"></i>${f.titre}</h2>
+     <p class="intro">${f.intro}</p>
+     <div class="liste"></div>`;
+  const liste = sec.querySelector(".liste");
+  OUTILS.filter(o=>o.f===f.id).forEach(o=>{
+    const a = document.createElement("a");
+    a.className = "outil";
+    a.href = o.url;
+    a.target = "_blank";
+    a.rel = "noopener";
+    a.style.color = f.couleur;          /* sert au filet au survol */
+    a.dataset.cherche = sansAccent([o.nom,o.code,o.quoi,o.cles].join(" "));
+    a.innerHTML =
+      `<span class="titre"><b>${o.nom}</b><code>${o.code}</code></span>
+       <span class="quoi">${o.quoi}</span>`;
+    liste.appendChild(a);
+  });
+  zone.appendChild(sec);
+});
+
+/* ---------------- recherche ---------------- */
+const saisie  = document.getElementById("q");
+const vide    = document.getElementById("vide");
+const compte  = document.getElementById("compte");
+const sections= [...document.querySelectorAll(".famille")];
+const cartes  = [...document.querySelectorAll(".outil")];
+
+function filtrer(){
+  const mots = sansAccent(saisie.value.trim()).split(/\s+/).filter(Boolean);
+  let visibles = 0;
+  cartes.forEach(c=>{
+    const ok = mots.every(m => c.dataset.cherche.includes(m));
+    c.hidden = !ok;
+    if(ok) visibles++;
+  });
+  sections.forEach(s=>{
+    s.hidden = ![...s.querySelectorAll(".outil")].some(c=>!c.hidden);
+  });
+  vide.style.display = visibles ? "none" : "block";
+  compte.textContent = visibles
+    ? visibles + (visibles>1 ? " outils trouvés" : " outil trouvé")
+    : "Aucun outil ne correspond";
+}
+
+saisie.addEventListener("input", filtrer);
+saisie.addEventListener("keydown", e=>{
+  if(e.key === "Enter"){
+    const premier = cartes.find(c=>!c.hidden);
+    if(premier) window.open(premier.href, "_blank", "noopener");
+  }
+  if(e.key === "Escape"){ saisie.value=""; filtrer(); }
+});
+
+document.querySelectorAll(".pistes button").forEach(b=>{
+  b.addEventListener("click", ()=>{ saisie.value = b.dataset.mot; filtrer(); saisie.focus(); });
+});
+
+/* La barre oblique du clavier amène au champ, comme dans un moteur de recherche. */
+document.addEventListener("keydown", e=>{
+  if(e.key === "/" && document.activeElement !== saisie){ e.preventDefault(); saisie.focus(); saisie.select(); }
+});
+
+filtrer();
+</script>
+</body>
+</html>
