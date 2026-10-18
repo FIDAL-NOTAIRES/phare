@@ -77,9 +77,44 @@ svg.carte{width:100%;height:auto;display:block;overflow:visible;min-height:330px
 g.grappe,g.satellite,path.brin-long{transition:opacity .25s}
 /* outil masqué aux collaborateurs — visible du seul administrateur */
 .masque .bille{opacity:.3}
+.masque .reflet{opacity:.3}
 .masque .etiquette{fill:#6F8396;font-style:italic}
+/* --- vie des sphères -------------------------------------------------
+   trois mouvements superposés, de rythmes différents pour qu’aucune
+   sphère ne batte en même temps qu’une autre :
+   1. le flottement du satellite entier,
+   2. la respiration du corps (très légère dilatation),
+   3. les courants qui parcourent la surface.                        */
 @keyframes respire{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
 .satellite{animation:respire var(--duree,8s) ease-in-out infinite;animation-delay:var(--retard,0s)}
+
+@keyframes souffle{0%,100%{transform:scale(1)}50%{transform:scale(1.035)}}
+.corps{animation:souffle var(--souffle,5s) ease-in-out infinite;animation-delay:var(--retard,0s)}
+
+@keyframes courant{from{stroke-dashoffset:var(--tour,120)}to{stroke-dashoffset:0}}
+.courant{
+  fill:none;stroke:#fff;stroke-width:1.6;stroke-linecap:round;
+  stroke-dasharray:var(--eclat,9) var(--creux,140);
+  animation:courant var(--vitesse,4s) linear infinite;
+  animation-delay:var(--decalage,0s);
+}
+.courant.faible{stroke-opacity:.34;stroke-width:1.2}
+.courant.vive{stroke-opacity:.8}
+.courant.lueur{stroke-opacity:.14;stroke-width:6}
+
+/* --- influx dans les brins : du disque du thème vers la sphère --- */
+@keyframes influx{from{stroke-dashoffset:var(--long,200)}to{stroke-dashoffset:0}}
+.influx{
+  fill:none;stroke-width:2;stroke-linecap:round;
+  stroke-dasharray:var(--eclat,7) var(--long,200);
+  animation:influx var(--vitesse,3.4s) linear infinite;
+  animation-delay:var(--decalage,0s);
+}
+.influx-long{stroke:#4E7E95;stroke-opacity:.5;stroke-width:1.6}
+
+/* une sphère masquée ne clignote pas : elle dort */
+.masque .courant,.masque .influx{display:none}
+.masque .corps{animation:none}
 
 /* ---------- cartouche ---------- */
 .cartouche{
@@ -157,7 +192,8 @@ body.mode-admin .bandeau-admin{display:block}
   body.mode-admin .enveloppe{padding-right:26px}
 }
 @media (prefers-reduced-motion:reduce){
-  .satellite{animation:none}
+  .satellite,.corps,.courant,.influx{animation:none}
+  .courant,.influx{display:none}
   *{transition:none!important}
 }
 </style>
@@ -398,8 +434,15 @@ function construire(){
   [[0,3],[3,1],[3,2],[3,4],[1,4]].forEach(([a,b])=>{
     const A=THEMES[a], B=THEMES[b];
     if(!themesActifs.includes(A) || !themesActifs.includes(B)) return;
-    carte.appendChild(el("path",{class:"brin-long",
-      d:`M${A.cx},${A.cy} Q${(A.cx+B.cx)/2},${(A.cy+B.cy)/2-40} ${B.cx},${B.cy}`}));
+    const d = `M${A.cx},${A.cy} Q${(A.cx+B.cx)/2},${(A.cy+B.cy)/2-40} ${B.cx},${B.cy}`;
+    carte.appendChild(el("path",{class:"brin-long", d}));
+    const long = el("path",{class:"influx influx-long", d});
+    carte.appendChild(long);
+    const L = Math.round((long.getTotalLength && long.getTotalLength()) || Math.hypot(B.cx-A.cx,B.cy-A.cy));
+    long.style.setProperty("--long", L);
+    long.style.setProperty("--eclat", "14");
+    long.style.setProperty("--vitesse", (6 + Math.random()*4).toFixed(2)+"s");
+    long.style.setProperty("--decalage", (-Math.random()*9).toFixed(2)+"s");
   });
 
   themesActifs.forEach(t=>{
@@ -416,6 +459,15 @@ function construire(){
       o._y = t.cy + Math.sin(a)*t.r;
       grappe.appendChild(el("line",{class:"brin", x1:t.cx, y1:t.cy, x2:o._x, y2:o._y,
         stroke:t.couleur, "stroke-opacity":".34"}));
+      /* l’influx : un éclat court qui remonte du disque vers la sphère */
+      const flux = el("line",{class:"influx", x1:t.cx, y1:t.cy, x2:o._x, y2:o._y,
+        stroke:melange(t.couleur,.6,true), "stroke-opacity":".85"});
+      const lg = Math.round(Math.hypot(o._x-t.cx, o._y-t.cy));
+      flux.style.setProperty("--long", lg);
+      flux.style.setProperty("--eclat", "8");
+      flux.style.setProperty("--vitesse", (2.6 + Math.random()*2.4).toFixed(2)+"s");
+      flux.style.setProperty("--decalage", (-Math.random()*5).toFixed(2)+"s");
+      grappe.appendChild(flux);
     });
 
     const coeur = el("g");
@@ -435,9 +487,48 @@ function construire(){
       a.dataset.theme = t.id;
       a.appendChild(el("circle",{class:"anneau", cx:o._x, cy:o._y, r:38, fill:"none",
         stroke:t.couleur, "stroke-width":"1.5"}));
-      a.appendChild(el("circle",{class:"bille", cx:o._x, cy:o._y, r:29,
+
+      /* le corps : il respire, et tout ce qui le parcourt est découpé à son bord */
+      const corps = el("g",{class:"corps", style:`transform-origin:${o._x}px ${o._y}px`});
+      corps.style.setProperty("--souffle", (4.2 + Math.random()*3).toFixed(2)+"s");
+      corps.style.setProperty("--retard", (-Math.random()*4).toFixed(2)+"s");
+      a.appendChild(corps);
+
+      const idClip = "bord-"+o.id;
+      const clip = el("clipPath",{id:idClip});
+      clip.appendChild(el("circle",{cx:o._x, cy:o._y, r:29}));
+      corps.appendChild(clip);
+
+      corps.appendChild(el("circle",{class:"bille", cx:o._x, cy:o._y, r:29,
         fill:`url(#bille-${t.id})`, style:`transform-origin:${o._x}px ${o._y}px`}));
-      a.appendChild(el("ellipse",{cx:o._x-8, cy:o._y-11, rx:9, ry:6, fill:"#fff",
+
+      /* courants : des arcs lumineux qui filent en travers de la bille.
+         Chaque arc est une ellipse inclinée, dont seul un éclat court
+         est tracé à la fois ; la découpe empêche de déborder. */
+      const champ = el("g",{"clip-path":`url(#${idClip})`, "pointer-events":"none"});
+      [{ry:10, angle:-18, vite:3.2}, {ry:19, angle:36, vite:4.6}, {ry:6, angle:74, vite:5.8}]
+        .forEach((c,k)=>{
+          const arc = el("ellipse",{class:"courant "+(k===0?"vive":"faible"),
+            cx:o._x, cy:o._y, rx:28, ry:c.ry,
+            transform:`rotate(${c.angle} ${o._x} ${o._y})`});
+          const tour = Math.round(2*Math.PI*Math.sqrt((28*28 + c.ry*c.ry)/2));
+          arc.style.setProperty("--tour", tour);
+          arc.style.setProperty("--creux", tour);
+          arc.style.setProperty("--eclat", k===0 ? "11" : "7");
+          arc.style.setProperty("--vitesse", (c.vite + Math.random()*1.6).toFixed(2)+"s");
+          arc.style.setProperty("--decalage", (-Math.random()*6).toFixed(2)+"s");
+          /* l’éclat principal traîne une lueur, pour ne pas se confondre
+             avec le reflet fixe de la sphère */
+          if(k===0){
+            const halo = arc.cloneNode();
+            halo.setAttribute("class","courant lueur");
+            champ.appendChild(halo);
+          }
+          champ.appendChild(arc);
+        });
+      corps.appendChild(champ);
+
+      corps.appendChild(el("ellipse",{class:"reflet", cx:o._x-8, cy:o._y-11, rx:9, ry:6, fill:"#fff",
         "fill-opacity":".22", transform:`rotate(-28 ${o._x-8} ${o._y-11})`, "pointer-events":"none"}));
       const et = el("text",{class:"etiquette", x:o._x, y:o._y+47}); et.textContent = o.code;
       a.appendChild(et);
