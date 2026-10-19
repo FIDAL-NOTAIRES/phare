@@ -105,6 +105,7 @@ svg.carte{flex:1 1 auto;min-width:0;height:100%}
   letter-spacing:.18em;text-transform:uppercase}
 .fiche-laterale h3{margin:0 0 8px;font:400 19px/1.2 Georgia,serif;color:#EDF6FA}
 .fiche-laterale p.f-quoi{margin:0 0 12px;font-size:12.5px;line-height:1.5;color:#9FB8C8}
+.fiche-laterale .f-compte{margin:0 0 10px;font:600 10px/1 ui-monospace,Menlo,monospace;letter-spacing:.14em;color:#6E93A8;text-transform:uppercase}
 .fiche-laterale .f-bas{margin:0;font:600 8.5px/1 ui-monospace,Menlo,monospace;
   letter-spacing:.2em;color:#FFC900}
 .fiche-laterale .f-bas.alerte{color:#FF982D}
@@ -115,6 +116,7 @@ svg.carte{flex:1 1 auto;min-width:0;height:100%}
 .mention{font:600 9.5px/1 ui-monospace,Menlo,monospace;letter-spacing:.14em;color:#86AABD;
   text-transform:uppercase;border-left:2px solid #2A5872;padding-left:8px;margin-right:10px}
 .mention:empty{display:none}
+.mention.alerte{color:#FFB667;border-left-color:var(--orange)}
 svg.carte{width:100%;height:100%;display:block}
 .ico{fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 
@@ -140,6 +142,12 @@ svg.carte{width:100%;height:100%;display:block}
 .arc{transition:opacity .25s,stroke-opacity .25s}
 .eteint{opacity:.12;pointer-events:none;cursor:default}
 g.module,path.arc{transition:opacity .25s}
+/* un outil qui ne répond pas : éteint, barré, mais toujours cliquable —
+   on n’empêche personne d’essayer */
+.en-panne .segment{opacity:.14}
+.en-panne .ecusson{opacity:.45;stroke-dasharray:3 3}
+.en-panne .etiquette{opacity:.5;text-decoration:line-through}
+.en-panne .rappel{stroke-opacity:.2}
 .masque .segment{opacity:.18}
 .masque .ecusson{opacity:.4}
 .masque .etiquette{fill:#6F8396;font-style:italic}
@@ -277,6 +285,7 @@ body.mode-admin .bandeau-admin{display:block}
   <symbol id="i-tasse" viewBox="0 0 24 24"><path class="ico" d="M4 9h13v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4z"/><path class="ico" d="M17 11h2a2 2 0 0 1 0 5h-2M7 3v3M11 3v3"/></symbol>
   <symbol id="i-telephone" viewBox="0 0 24 24"><rect class="ico" x="7" y="2" width="10" height="20" rx="2"/><path class="ico" d="M11 18h2"/></symbol>
   <symbol id="i-reseau" viewBox="0 0 24 24"><circle class="ico" cx="12" cy="5" r="2.5"/><circle class="ico" cx="5" cy="18" r="2.5"/><circle class="ico" cx="19" cy="18" r="2.5"/><path class="ico" d="M12 7.5v4M10.5 13L6.5 16M13.5 13l4 3"/></symbol>
+  <symbol id="i-loupe-maison" viewBox="0 0 24 24"><path class="ico" d="M3 10l8-6 8 6v10H3z"/><circle class="ico" cx="12" cy="13" r="3.2"/><path class="ico" d="M14.4 15.4L17 18"/></symbol>
   <symbol id="i-bouteille" viewBox="0 0 24 24"><path class="ico" d="M10 2h4v5l2 3v12H8V10l2-3z"/><path class="ico" d="M8 14h8"/></symbol>
 </defs></svg>
 
@@ -330,7 +339,7 @@ body.mode-admin .bandeau-admin{display:block}
 
   <footer>
     <p><span class="mention" id="compte-outils"></span><span class="mention" id="coin-journee"></span>Chaque outil s’ouvre dans un nouvel onglet.</p>
-    <p><span class="mention" id="coin-masques"></span>Une anomalie, une idée : écrivez à Jean-François Dumetz. <button class="lien-admin" id="ouvrir-admin">Administration</button></p>
+    <p><span class="mention alerte" id="coin-pannes"></span><span class="mention" id="coin-masques"></span>Une anomalie, une idée : écrivez à Jean-François Dumetz. <button class="lien-admin" id="ouvrir-admin">Administration</button></p>
   </footer>
 </div>
 
@@ -371,74 +380,77 @@ const THEMES = [
 ];
 
 const OUTILS = [
-  {id:"redpar", ico:"i-parcelle", t:"bien", code:"REDPAR", nom:"Fiche de parcelle et de bâti", url:"https://redpar-frontend.vercel.app/",
+  {id:"redpar", service:"REDPAR", ico:"i-parcelle", t:"bien", code:"REDPAR", nom:"Fiche de parcelle et de bâti", url:"https://redpar-frontend.vercel.app/",
    quoi:"Les parcelles d’une société ou d’une personne : surfaces, bâti, propriétaires.",
    cles:"parcelle cadastre bati siren societe proprietaire surface commune contenance section lieudit numero portefeuille foncier patrimoine entreprise surface batie"},
-  {id:"urba", ico:"i-carte", t:"bien", code:"URBA", nom:"Règles d’urbanisme", url:"https://urba-lemon.vercel.app/",
+  {id:"urba", service:"URBA", ico:"i-carte", t:"bien", code:"URBA", nom:"Règles d’urbanisme", url:"https://urba-lemon.vercel.app/",
    quoi:"Zonage, servitudes et prescriptions applicables à une parcelle.",
    cles:"urbanisme plu zonage servitude gpu constructible pos plu plui droit des sols emplacement reserve alignement zone naturelle agricole constructibilite prescription"},
-  {id:"xylo", ico:"i-insecte", t:"bien", code:"XYLO", nom:"Termites et mérule", url:"https://xylo-phi.vercel.app/",
+  {id:"xylo", service:"XYLO", ico:"i-insecte", t:"bien", code:"XYLO", nom:"Termites et mérule", url:"https://xylo-phi.vercel.app/",
    quoi:"Arrêtés préfectoraux applicables à une commune ou à une parcelle.",
    cles:"termites merule arrete prefectoral insecte xylophage diagnostic charpente capricorne parasite bois etat parasitaire infestation"},
-  {id:"certif", ico:"i-certificat", t:"bien", code:"CERTIF", nom:"Certificat d’urbanisme", url:"https://certif-bay.vercel.app/",
+  {id:"certif", service:"CERTIF", ico:"i-certificat", t:"bien", code:"CERTIF", nom:"Certificat d’urbanisme", url:"https://certif-bay.vercel.app/",
    quoi:"Demande de certificat d’information (CUa) et suivi.",
    cles:"certificat urbanisme cua mairie demande cu operationnel instruction delai mairie urbanisme renseignement"},
-  {id:"paint", ico:"i-pinceau", t:"bien", code:"PAINT", nom:"Plans cadastraux coloriés", url:"https://paint-blue.vercel.app/",
+  {id:"paint", service:"PAINT", ico:"i-pinceau", t:"bien", code:"PAINT", nom:"Plans cadastraux coloriés", url:"https://paint-blue.vercel.app/",
    quoi:"Colorier les parcelles d’un dossier et sortir l’extrait officiel.",
    cles:"plan cadastral coloriage extrait dgfip carte dessin annexe colorier teinter surligner situation reperage annexe illustration"},
-  {id:"matrice", ico:"i-registre", t:"bien", code:"MATRICE", nom:"Relevés de matrice cadastrale", url:"https://matrice-black.vercel.app/",
+  {id:"matrice", service:"MATRICE", ico:"i-registre", t:"bien", code:"MATRICE", nom:"Relevés de matrice cadastrale", url:"https://matrice-black.vercel.app/",
    quoi:"Demandes aux services du cadastre, et suivi de ce qui est parti.",
    cles:"matrice cadastrale sdif ptgc releve demande extrait fiche proprietaire compte cadastral centre des impots fonciers releve de propriete modele 1 extrait"},
 
-  {id:"marteau", ico:"i-marteau", t:"titres", code:"MARTEAU", nom:"Audit de portefeuille immobilier", url:"https://marteau-rho.vercel.app/",
+  {id:"marteau", service:"MARTEAU", ico:"i-marteau", t:"titres", code:"MARTEAU", nom:"Audit de portefeuille immobilier", url:"https://marteau-rho.vercel.app/",
    quoi:"Le dossier complet d’un portefeuille : il interroge les autres outils et compile le rapport.",
    cles:"audit portefeuille rapport dossier immeuble societe diligences etat des lieux patrimoine bailleur rapport complet synthese"},
-  {id:"fusion", ico:"i-fusion", t:"titres", code:"FUSION", nom:"Analyse des titres par société", url:"https://fusion-three-kappa.vercel.app/",
+  {id:"fusion", service:"FUSION", ico:"i-fusion", t:"titres", code:"FUSION", nom:"Analyse des titres par société", url:"https://fusion-three-kappa.vercel.app/",
    quoi:"État hypothécaire, regroupement par unité foncière, blocs rédactionnels.",
    cles:"fusion titre etat hypothecaire unite fonciere absorption tup groupe absorption apport designation ensemble immobilier societe absorbee unite"},
-  {id:"trente", ico:"i-chaine", t:"titres", code:"TRENTE", nom:"Origine de propriété sur trente ans", url:"https://trente.vercel.app/",
+  {id:"trente", service:"TRENTE", ico:"i-chaine", t:"titres", code:"TRENTE", nom:"Origine de propriété sur trente ans", url:"https://trente.vercel.app/",
    quoi:"Reconstituer et vérifier la chaîne trentenaire d’un immeuble.",
    cles:"trentenaire origine propriete chaine titre acte anterieur prescription acquisitive vendeur precedent anteriorite publication titre de propriete"},
-  {id:"histo", ico:"i-arbre", t:"titres", code:"HISTO", nom:"Filiation cadastrale", url:"https://histo-sand.vercel.app/",
+  {id:"histo", service:"HISTO", ico:"i-arbre", t:"titres", code:"HISTO", nom:"Filiation cadastrale", url:"https://histo-sand.vercel.app/",
    quoi:"L’histoire d’une parcelle chez la DGFiP : divisions, réunions, remembrements.",
    cles:"filiation dfi genealogie parcelle division reunion remembrement ancien numero renumerotation cadastre renove ancienne parcelle feuille section disparition"},
-  {id:"copro", ico:"i-immeuble", t:"titres", code:"COPRO", nom:"Copropriété", url:"https://copro-sigma.vercel.app/",
+  {id:"copro", service:"COPRO", ico:"i-immeuble", t:"titres", code:"COPRO", nom:"Copropriété", url:"https://copro-sigma.vercel.app/",
    quoi:"Analyse du règlement et des procès-verbaux d’assemblée générale.",
    cles:"copropriete reglement edd lot tantieme assemblee generale proces verbal syndic millieme tantieme lot charges carnet entretien pre etat date syndic assemblee edd"},
 
-  {id:"countdown", ico:"i-calculatrice", t:"chiffre", code:"COUNTDOWN", nom:"Frais d’acte et émoluments", url:"https://countdown-kappa-azure.vercel.app/",
+  {id:"countdown", service:"COUNTDOWN", ico:"i-calculatrice", t:"chiffre", code:"COUNTDOWN", nom:"Frais d’acte et émoluments", url:"https://countdown-kappa-azure.vercel.app/",
    quoi:"Les calculateurs : vente, donation, succession, fiducie, délais.",
    cles:"frais acte emolument taxe calcul provision vente donation succession fiducie delai honoraires debours droits de mutation tarif simulation cout provision taxe de publicite emolument"},
-  {id:"prix", ico:"i-etiquette", t:"chiffre", code:"PRIX", nom:"Estimation et négociation", url:"https://prix-mu.vercel.app/",
+  {id:"prix", service:"PRIX", ico:"i-etiquette", t:"chiffre", code:"PRIX", nom:"Estimation et négociation", url:"https://prix-mu.vercel.app/",
    quoi:"Valeur vénale et argumentaire, à partir des ventes enregistrées.",
    cles:"prix valeur venale estimation negociation dvf marche travaux budget comparables valeur de marche argumentaire negociation estimation bien baisse"},
-  {id:"pret", ico:"i-banque", t:"chiffre", code:"PRÊT", nom:"Frais de prêt — particulier", url:"https://pret-particulier.vercel.app/",
+  {id:"pret", service:"PRÊT PART.", ico:"i-banque", t:"chiffre", code:"PRÊT", nom:"Frais de prêt — particulier", url:"https://pret-particulier.vercel.app/",
    quoi:"Coût d’une garantie et frais d’un prêt pour un particulier.",
    cles:"pret particulier garantie hypotheque ppd frais emprunt mainlevee privilege de preteur de deniers caution garantie inscription radiation"},
-  {id:"pret-pro", ico:"i-mallette", t:"chiffre", code:"PRÊT PRO", nom:"Frais de prêt — professionnel", url:"https://pret-pro.vercel.app/",
+  {id:"taxverif", ico:"i-loupe-maison", t:"chiffre", code:"TAXVÉRIF", nom:"Vérification de taxe foncière", url:"https://taxverif-particulier.vercel.app/", pret:false,
+   quoi:"Contrôle d’un avis de taxe foncière, verdict au client, lettre de mission et demande à l’administration.",
+   cles:"taxe fonciere avis impot local verification reclamation degrevement valeur locative base taux teom gemapi invariant mission mandat"},
+  {id:"pret-pro", service:"PRÊT PRO", ico:"i-mallette", t:"chiffre", code:"PRÊT PRO", nom:"Frais de prêt — professionnel", url:"https://pret-pro.vercel.app/",
    quoi:"Même calcul pour un financement professionnel.",
    cles:"pret professionnel entreprise garantie frais emprunt mainlevee privilege garantie caution inscription societe financement"},
 
-  {id:"moneta", ico:"i-livre", t:"redige", code:"MONETA", nom:"Clausier notarial", url:"https://moneta-navy.vercel.app/",
+  {id:"moneta", service:"MONETA", ico:"i-livre", t:"redige", code:"MONETA", nom:"Clausier notarial", url:"https://moneta-navy.vercel.app/",
    quoi:"Découper un acte, comparer deux rédactions, retrouver la bonne formule.",
    cles:"clause clausier redaction promesse acte comparaison bibliotheque trame article formule modele article paragraphe rubrique comparer rediger trame promesse"},
-  {id:"plume", ico:"i-plume", t:"redige", code:"PLUME", nom:"Statuts de SCI", url:"https://plume-mocha.vercel.app/",
+  {id:"plume", service:"PLUME", ico:"i-plume", t:"redige", code:"PLUME", nom:"Statuts de SCI", url:"https://plume-mocha.vercel.app/",
    quoi:"Rédaction des statuts d’une société civile immobilière.",
    cles:"statuts sci societe civile constitution associes gerant apports parts gerance objet social siege statuts societe civile"},
-  {id:"consult", ico:"i-note", t:"redige", code:"CONSULT", nom:"Consultation écrite", url:"https://consult-sand.vercel.app/", pret:false,
+  {id:"consult", service:"CONSULT", ico:"i-note", t:"redige", code:"CONSULT", nom:"Consultation écrite", url:"https://consult-sand.vercel.app/", pret:false,
    quoi:"Transformer un échange oral avec le client en consultation écrite. Chantier en attente.",
    cles:"consultation ecrite client entretien note entretien note ecrite client restitution"},
 
   {id:"coffee", ico:"i-tasse", t:"seance", code:"COFFEE", nom:"Outils de séance", url:"https://coffee-taupe-gamma.vercel.app/",
    quoi:"Les imprévus d’un rendez-vous : recevabilité d’une pièce, procuration, légalisation, honoraires.",
    cles:"seance rendez-vous piece identite procuration legalisation apostille honoraires imprevu identite passeport titre de sejour mandat pouvoir procuration timbre recevabilite"},
-  {id:"fidal-apps", ico:"i-telephone", t:"seance", code:"FIDAL APPS", nom:"Les outils sur téléphone", url:"https://fidal-apps.vercel.app/",
+  {id:"fidal-apps", service:"FIDAL Apps", ico:"i-telephone", t:"seance", code:"FIDAL APPS", nom:"Les outils sur téléphone", url:"https://fidal-apps.vercel.app/",
    quoi:"Le lanceur à installer sur l’écran d’accueil — il embarque la radio et la revue de presse.",
    cles:"telephone mobile application lanceur installer radio presse iphone ecran accueil installer raccourci mobile"},
-  {id:"carto", ico:"i-reseau", t:"seance", code:"CARTO", nom:"Carte des outils", url:"https://carto-six.vercel.app/",
+  {id:"carto", service:"CARTO", ico:"i-reseau", t:"seance", code:"CARTO", nom:"Carte des outils", url:"https://carto-six.vercel.app/",
    quoi:"Qui appelle qui, ce qui est abouti, ce qui est en chantier.",
    cles:"carte cartographie schema avancement chantier suite organigramme schema avancement chantier organigramme suite"},
-  {id:"partage", ico:"i-bouteille", t:"seance", code:"PARTAGE", nom:"La cave", url:"https://partage-amiable.vercel.app/",
+  {id:"partage", service:"PARTAGE", ico:"i-bouteille", t:"seance", code:"PARTAGE", nom:"La cave", url:"https://partage-amiable.vercel.app/",
    quoi:"Les bouteilles, leurs notes et les avis de chacun.",
    cles:"cave vin bouteille partage amiable degustation vin bouteille cave degustation note"}
 ];
@@ -449,6 +461,11 @@ const OUTILS = [
    { masques:[identifiants], sel:"hex", empreinte:"hex", maj:"ISO" }
 ================================================================== */
 const API = "https://prix-mu.vercel.app/api/parametres?outil=phare&cle=visibilite";
+/* Compteur d’ouvertures : global et anonyme — combien de fois chaque outil
+   a été ouvert depuis PHARE, jamais par qui. C’est ce compte qui donne la
+   hauteur des barres : elles mesurent enfin quelque chose de vrai. */
+const API_USAGES = "https://prix-mu.vercel.app/api/parametres?outil=phare&cle=usages";
+let usages = {};
 let reglages = null;                      /* null tant que rien n’est lu */
 let masques  = OUTILS.filter(o=>o.pret===false).map(o=>o.id);
 
@@ -463,6 +480,28 @@ async function lireReglages(){
     }
   }catch(e){ /* base muette : on garde les valeurs par défaut */ }
 }
+async function lireUsages(){
+  try{
+    const r = await fetch(API_USAGES, {cache:"no-store"});
+    if(!r.ok) return;
+    const d = await r.json();
+    if(d && d.valeur && typeof d.valeur === "object" && d.valeur.compte) usages = d.valeur.compte;
+  }catch(e){ /* pas de compte : toutes les barres à la même hauteur */ }
+}
+
+/* On relit juste avant d’écrire : deux postes qui ouvrent un outil en même
+   temps ne s’effacent pas l’un l’autre — au pire une ouverture est perdue. */
+async function noterOuverture(id){
+  try{
+    await lireUsages();
+    usages[id] = (usages[id] || 0) + 1;
+    await fetch(API_USAGES, {method:"PUT", headers:{"content-type":"application/json"},
+      body: JSON.stringify({compte: usages, maj: new Date().toISOString()})});
+    /* on ne redessine pas : la hauteur des barres se mettra à jour au
+       prochain chargement, plutôt que de tout rebâtir sous les doigts */
+  }catch(e){ /* un compteur perdu n’est pas un incident */ }
+}
+
 async function ecrireReglages(){
   const valeur = Object.assign({}, reglages||{}, {masques, maj:new Date().toISOString()});
   reglages = valeur;
@@ -494,6 +533,16 @@ const melange = (hex,f,vers255)=>{
   return "rgb("+c.map(x=> Math.round(vers255 ? x+(255-x)*f : x*(1-f))).join(",")+")";
 };
 const estAdmin = () => document.body.classList.contains("mode-admin");
+
+/* Les derniers outils ouverts, retenus SUR CE POSTE seulement : rien ne
+   part à la base, personne d’autre ne les voit. */
+const CLE_RECENTS = "phare-recents";
+let recents = [];
+try{ recents = JSON.parse(localStorage.getItem(CLE_RECENTS) || "[]"); }catch(e){ recents = []; }
+function retenirRecent(id){
+  recents = [id, ...recents.filter(x=> x !== id)].slice(0,3);
+  try{ localStorage.setItem(CLE_RECENTS, JSON.stringify(recents)); }catch(e){}
+}
 const estMasque = id => masques.includes(id);
 let satellites = [];
 
@@ -688,6 +737,8 @@ function construire(){
   if(!total){ filtrer(); return; }
   const pas = 360 / total;
 
+  const usageMax = Math.max(0, ...OUTILS.map(o=> usages[o.id] || 0));
+
   let rang = 0;
   const aPlacer = [];                 /* étiquettes à placer sans chevauchement */
   const ecussons = [];                /* obstacles : les hexagones des modules */
@@ -725,18 +776,24 @@ function construire(){
       const g = el("g",{class:"module"+(estMasque(o.id)?" masque":"")});
       g.dataset.cherche = sansAccent([o.nom,o.code,o.quoi,o.cles].join(" "));
       g.dataset.theme = t.id;
-      const lien = el("a",{href:o.url, target:"_blank", rel:"noopener",
+      const lien = el("a",{href:o.url, target:"_blank", rel:"noopener", tabindex:"0",
                            "aria-label":o.nom+" — "+o.code+" — "+t.nom});
       g.appendChild(lien);
 
       /* LA BARRE : quatre segments égaux, de l’anneau vers l’intérieur.
          Hauteurs volontairement identiques — rien ici ne mesure quoi que
          ce soit, et une barre qui varierait sans donnée serait un leurre. */
+      /* NOMBRE DE SEGMENTS : proportionnel au nombre d’ouvertures, de deux
+         à cinq. Tant que rien n’a été ouvert, tous en portent quatre —
+         une barre uniforme dit « pas encore de données », elle ne ment pas. */
       const larg = 19, segment = 8, interstice = 2.6;
+      const combien = usageMax > 0
+        ? Math.max(2, Math.min(5, Math.round(2 + 3 * (usages[o.id]||0) / usageMax)))
+        : 4;
       const tourne = `rotate(${a+90} ${CX} ${CY})`;
-      for(let k=0;k<4;k++){
+      for(let k=0;k<combien;k++){
         const haut = RAYON - 7 - k*(segment+interstice);
-        const op = (0.92 - k*0.17).toFixed(2);
+        const op = (0.92 - k*0.15).toFixed(2);
         const r = el("rect",{class:"segment allumage",
           x: CX - larg/2, y: CY - haut, width: larg, height: segment, rx:"1",
           fill: t.couleur, opacity: op, transform: tourne});
@@ -761,6 +818,11 @@ function construire(){
         fill:"none", stroke:t.couleur, "stroke-width":"1.2"}));
       lien.appendChild(el("polygon",{class:"ecusson", points:hex(xm,ym,20),
         fill:"#0C2134", stroke:t.couleur, "stroke-width":"1.5"}));
+      if(recents.includes(o.id)){
+        /* une pastille au coin de l’écusson : « vous y êtes allé récemment » */
+        lien.appendChild(el("circle",{class:"recent", cx:xm+15, cy:ym-13, r:3.4,
+          fill:"#FFC900", stroke:"#0A1C2C", "stroke-width":"1.2"}));
+      }
       const u = el("use",{href:"#"+o.ico, x:xm-10.5, y:ym-10.5, width:21, height:21});
       u.setAttribute("color", melange(t.couleur,.45,true));
       u.setAttribute("pointer-events","none");
@@ -782,6 +844,7 @@ function construire(){
       lien.appendChild(tx);
       aPlacer.push({tx, trait, a, ancre, dy, xm, ym});
 
+      lien.addEventListener("click", ()=>{ noterOuverture(o.id); retenirRecent(o.id); });
       lien.addEventListener("mouseenter", ()=>montrer(o, lien));
       lien.addEventListener("focus",      ()=>montrer(o, lien));
       lien.addEventListener("mouseleave", cacher);
@@ -811,6 +874,7 @@ function construire(){
   placerEtiquettes(aPlacer, ecussons);
   cadrer(aPlacer, ecussons);
   if(typeof etatJourneeCourant !== "undefined" && etatJourneeCourant) poserJournee(etatJourneeCourant);
+  if(typeof marquerPannes === "function") marquerPannes();
   const compteur = document.getElementById("compte-outils");
   if(compteur) compteur.textContent = total + (total>1 ? " outils ouverts" : " outil ouvert");
 
@@ -902,11 +966,13 @@ function ficheInvite(){
   panneau.innerHTML = '<p class="f-invite">Survolez un module pour savoir ce qu’il fait, ' +
     'ou cliquez au centre pour demander à la voix.</p>';
 }
-function ficheEcrire({haut, titre, quoi, bas, couleur, url, alerte}){
+function ficheEcrire({haut, titre, quoi, bas, couleur, url, alerte, compte, recent}){
   panneau.innerHTML =
     (haut  ? `<p class="f-haut" style="color:${couleur||"#6DD5DC"}">${haut}</p>` : "") +
     (titre ? `<h3>${titre}</h3>` : "") +
     (quoi  ? `<p class="f-quoi">${quoi}</p>` : "") +
+    (recent ? `<p class="f-compte" style="color:#C8A33A">Ouvert récemment depuis ce poste</p>` : "") +
+    (compte != null ? `<p class="f-compte">${compte} ouverture${compte>1?"s":""} depuis PHARE</p>` : "") +
     (url   ? `<a class="ouvrir" href="${url}" target="_blank" rel="noopener">Ouvrir</a>` : "") +
     (bas   ? `<p class="f-bas${alerte ? " alerte" : ""}">${bas}</p>` : "");
 }
@@ -959,10 +1025,15 @@ function delier(){
 function montrer(o, noeud){
   const theme = THEMES.find(x=>x.id===o.t);
   relier(noeud, theme.couleur);
-  ficheEcrire({haut: theme.nom + " · " + o.code, titre: o.nom, quoi: o.quoi,
-               couleur: theme.couleur,
-               bas: estMasque(o.id) ? "Masqué aux collaborateurs" : "Cliquer sur le module pour ouvrir",
-               alerte: estMasque(o.id)});
+  const panne = (typeof enPanne !== "undefined") && enPanne.has(o.id);
+  ficheEcrire({haut: theme.nom + " · " + o.code, titre: o.nom,
+               quoi: o.quoi + (panne ? " — cet outil ne répond pas en ce moment." : ""),
+               couleur: panne ? "#FF982D" : theme.couleur,
+               compte: estAdmin() ? (usages[o.id] || 0) : null,
+               recent: recents.includes(o.id),
+               bas: panne ? "Hors service — signalé au journal des incidents"
+                    : estMasque(o.id) ? "Masqué aux collaborateurs" : "Cliquer sur le module pour ouvrir",
+               alerte: panne || estMasque(o.id)});
 }
 function cacher(){
   /* si une demande vocale a proposé un outil, le panneau y revient :
@@ -1005,6 +1076,22 @@ saisie.addEventListener("keydown", e=>{
 });
 document.addEventListener("keydown", e=>{
   if(e.key==="/" && document.activeElement!==saisie){ e.preventDefault(); saisie.focus(); saisie.select(); }
+});
+
+/* Flèches : on passe d’un module à l’autre dans l’ordre de l’anneau, en
+   sautant ceux que la recherche a éteints. Entrée ouvre — c’est le
+   comportement normal d’un lien, rien à coder. */
+document.addEventListener("keydown", e=>{
+  if(!["ArrowRight","ArrowLeft","ArrowUp","ArrowDown"].includes(e.key)) return;
+  if(document.activeElement === saisie) return;
+  const vivants = satellites.filter(s=> !s.noeud.classList.contains("eteint"));
+  if(!vivants.length) return;
+  const courant = vivants.findIndex(s=> s.noeud.contains(document.activeElement));
+  const sens = (e.key === "ArrowRight" || e.key === "ArrowDown") ? 1 : -1;
+  const suivant = courant < 0 ? (sens > 0 ? 0 : vivants.length-1)
+                              : (courant + sens + vivants.length) % vivants.length;
+  const lien = vivants[suivant].noeud.querySelector("a");
+  if(lien){ e.preventDefault(); lien.focus(); }
 });
 
 /* ==================================================================
@@ -1191,9 +1278,10 @@ let ecouteur = null, enEcoute = false;
 function basculerVoix(){
   /* si un outil vient d’être proposé, le clic suivant l’ouvre */
   if(outilPropose && !enEcoute){
-    const url = outilPropose.url; outilPropose = null;
+    const choisi = outilPropose; outilPropose = null;
+    noterOuverture(choisi.id); retenirRecent(choisi.id);
     coeurHud.repos(); mettreEnAvant(null);
-    window.open(url, "_blank", "noopener");
+    window.open(choisi.url, "_blank", "noopener");
     return;
   }
   if(enEcoute){ try{ ecouteur.stop(); }catch(e){} return; }
@@ -1288,7 +1376,45 @@ document.addEventListener("keydown", e=>{
 });
 
 /* ==================================================================
-   6. ÉTAT DE LA JOURNÉE
+   6. OUTILS EN PANNE
+   On ne lit pas la sonde de santé de MORNING : elle n’autorise pas les
+   appels d’une autre adresse. On lit le JOURNAL DES INCIDENTS, qui lui
+   l’autorise — et qui vaut mieux : un incident n’est ouvert qu’après
+   deux échecs confirmés, alors que la sonde est un instantané.
+   Si le journal ne répond pas, on n’éteint rien : c’est le comportement
+   sûr, mieux vaut un outil en panne non signalé qu’un outil sain barré.
+================================================================== */
+const API_INCIDENTS = "https://connexion-omega.vercel.app/api/incidents";
+let enPanne = new Set();
+
+const clefService = t => sansAccent(String(t||"")).replace(/[^a-z0-9]/g,"");
+
+async function releverPannes(){
+  try{
+    const r = await fetch(API_INCIDENTS, {cache:"no-store"});
+    if(!r.ok) return;
+    const d = await r.json();
+    const actifs = Array.isArray(d.actifs) ? d.actifs : [];
+    const noms = new Set(actifs.map(i=> clefService(i.outil)));
+    const avant = [...enPanne].join(",");
+    enPanne = new Set(OUTILS.filter(o=> o.service && noms.has(clefService(o.service))).map(o=> o.id));
+    if([...enPanne].join(",") !== avant) marquerPannes();
+  }catch(e){ /* journal muet : on ne barre rien */ }
+}
+
+function marquerPannes(){
+  satellites.forEach(({o,noeud})=> noeud.classList.toggle("en-panne", enPanne.has(o.id)));
+  const n = enPanne.size;
+  const coin = document.getElementById("coin-pannes");
+  if(coin) coin.textContent = n ? (n>1 ? n+" outils ne répondent pas" : "1 outil ne répond pas") : "";
+}
+
+releverPannes();
+setInterval(()=>{ if(document.visibilityState === "visible") releverPannes(); }, 5*60*1000);
+document.addEventListener("visibilitychange", ()=>{ if(document.visibilityState==="visible") releverPannes(); });
+
+/* ==================================================================
+   7. ÉTAT DE LA JOURNÉE
    On ne peut pas lire la trace laissée par MORNING : chaque site a son
    propre espace de stockage. On demande donc un jeton SANS ÉCRAN
    (prompt « none ») : s’il revient, les outils accéderont au Drive sans
@@ -1347,9 +1473,10 @@ document.addEventListener("visibilitychange", ()=>{
 });
 
 /* ==================================================================
-   7. DÉMARRAGE
+   8. DÉMARRAGE
 ================================================================== */
 construire();                 /* affichage immédiat, sans attendre la base */
+lireUsages().then(construire);
 lireReglages().then(()=>{
   if(sessionStorage.getItem("phare-admin")==="1" && reglages && reglages.empreinte){
     document.body.classList.add("mode-admin");
