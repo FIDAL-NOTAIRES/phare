@@ -84,7 +84,7 @@ h1{font-family:Georgia,serif;font-weight:400;font-size:clamp(21px,2.4vw,29px);ma
 
 /* ---------- l’anneau ---------- */
 .ciel{position:relative;flex:1;min-height:0;margin:0;display:flex;align-items:stretch;gap:18px}
-svg.carte{flex:1;min-width:0}
+svg.carte{flex:1 1 auto;min-width:0;height:100%}
 
 /* le panneau déporté : la description de l’outil s’affiche à côté du
    schéma plutôt qu’en son centre, qui reste au tableau de bord */
@@ -93,6 +93,13 @@ svg.carte{flex:1;min-width:0}
   border-left:2px solid #2A5872;transition:border-color .18s;background:linear-gradient(90deg,rgba(18,42,66,.75),rgba(10,28,44,.2));
   clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%);
 }
+/* le trait qui relie le module survolé à sa description */
+.liaison{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3;
+  opacity:0;transition:opacity .14s}
+.liaison.visible{opacity:1}
+#liaison-trait{fill:none;stroke-width:1.2;stroke-dasharray:4 3}
+#liaison-point{r:3}
+
 .f-invite{margin:0;font-size:12.5px;line-height:1.5;color:#5E7A8D}
 .fiche-laterale .f-haut{margin:0 0 6px;font:600 9.5px/1 ui-monospace,Menlo,monospace;
   letter-spacing:.18em;text-transform:uppercase}
@@ -310,7 +317,8 @@ body.mode-admin .bandeau-admin{display:block}
 
   <div class="ciel" id="ciel">
     <svg class="carte" id="carte" viewBox="288 53 640 566" role="img" aria-label="Les outils du cabinet, rangés par thème autour d’un anneau"></svg>
-    <svg class="liaison" id="liaison" aria-hidden="true"><polyline id="liaison-trait"/><circle id="liaison-point"/></svg>
+    <svg class="liaison" id="liaison" aria-hidden="true"
+         style="position:absolute;inset:0;pointer-events:none"><polyline id="liaison-trait" fill="none"/><circle id="liaison-point" r="3" fill="none"/></svg>
     <aside class="fiche-laterale">
       <div id="fiche" aria-live="polite">
         <p class="f-invite">Survolez un module pour savoir ce qu’il fait, ou cliquez au centre pour demander à la voix.</p>
