@@ -6,6 +6,7 @@
 <title>PHARE — Les outils</title>
 <meta name="description" content="Les outils, reliés par thème. Une sphère, un outil.">
 <meta name="theme-color" content="#081625">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2064%2064%27%3E%3Crect%20width%3D%2764%27%20height%3D%2764%27%20rx%3D%2713%27%20fill%3D%27%230F2238%27%2F%3E%3Cpath%20d%3D%27M32%2030%2032%2014M32%2034%2048%2045M32%2034%2016%2045%27%20stroke%3D%27%232E4D68%27%20stroke-width%3D%272%27%2F%3E%3Ccircle%20cx%3D%2732%27%20cy%3D%2732%27%20r%3D%278%27%20fill%3D%27none%27%20stroke%3D%27%23FFC900%27%20stroke-width%3D%272%27%2F%3E%3Ccircle%20cx%3D%2732%27%20cy%3D%2713%27%20r%3D%277%27%20fill%3D%27%2333838B%27%2F%3E%3Ccircle%20cx%3D%2749%27%20cy%3D%2746%27%20r%3D%277%27%20fill%3D%27%23A01040%27%2F%3E%3Ccircle%20cx%3D%2715%27%20cy%3D%2746%27%20r%3D%277%27%20fill%3D%27%236DD5DC%27%2F%3E%3C%2Fsvg%3E">
 <script src="https://connexion-omega.vercel.app/bandeau.js" defer></script>
 <style>
 /* ------------------------------------------------------------------
@@ -57,6 +58,7 @@ h1{font-family:Georgia,serif;font-weight:400;font-size:clamp(25px,3vw,34px);marg
 .champ input::placeholder{color:#7D93A7}
 .champ input:focus{border-color:var(--jaune);background:rgba(255,255,255,.1)}
 .champ>svg{position:absolute;left:15px;top:12px;width:18px;height:18px;stroke:#7D93A7;fill:none;stroke-width:2}
+.aide{margin:7px 0 0 16px;font-size:11.5px;color:#6F8396}
 
 /* ---------- constellation ---------- */
 .ciel{position:relative;margin:0 0 10px}
@@ -228,6 +230,7 @@ body.mode-admin .bandeau-admin{display:block}
     <div class="champ">
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5 L21 21"/></svg>
       <input id="q" type="search" autocomplete="off" placeholder="Chercher un besoin…" aria-label="Chercher un outil" aria-describedby="compte">
+      <p class="aide">Mots métier acceptés : millièmes, mainlevée, droits de mutation, charpente…</p>
     </div>
   </div>
 
@@ -286,74 +289,74 @@ const THEMES = [
 const OUTILS = [
   {id:"redpar", t:"bien", code:"REDPAR", nom:"Fiche de parcelle et de bâti", url:"https://redpar-frontend.vercel.app/",
    quoi:"Les parcelles d’une société ou d’une personne : surfaces, bâti, propriétaires.",
-   cles:"parcelle cadastre bati siren societe proprietaire surface commune"},
+   cles:"parcelle cadastre bati siren societe proprietaire surface commune contenance section lieudit numero portefeuille foncier patrimoine entreprise surface batie"},
   {id:"urba", t:"bien", code:"URBA", nom:"Règles d’urbanisme", url:"https://urba-lemon.vercel.app/",
    quoi:"Zonage, servitudes et prescriptions applicables à une parcelle.",
-   cles:"urbanisme plu zonage servitude gpu constructible"},
+   cles:"urbanisme plu zonage servitude gpu constructible pos plu plui droit des sols emplacement reserve alignement zone naturelle agricole constructibilite prescription"},
   {id:"xylo", t:"bien", code:"XYLO", nom:"Termites et mérule", url:"https://xylo-phi.vercel.app/",
    quoi:"Arrêtés préfectoraux applicables à une commune ou à une parcelle.",
-   cles:"termites merule arrete prefectoral insecte xylophage diagnostic"},
+   cles:"termites merule arrete prefectoral insecte xylophage diagnostic charpente capricorne parasite bois etat parasitaire infestation"},
   {id:"certif", t:"bien", code:"CERTIF", nom:"Certificat d’urbanisme", url:"https://certif-bay.vercel.app/",
    quoi:"Demande de certificat d’information (CUa) et suivi.",
-   cles:"certificat urbanisme cua mairie demande"},
+   cles:"certificat urbanisme cua mairie demande cu operationnel instruction delai mairie urbanisme renseignement"},
   {id:"paint", t:"bien", code:"PAINT", nom:"Plans cadastraux coloriés", url:"https://paint-blue.vercel.app/",
    quoi:"Colorier les parcelles d’un dossier et sortir l’extrait officiel.",
-   cles:"plan cadastral coloriage extrait dgfip carte dessin annexe"},
+   cles:"plan cadastral coloriage extrait dgfip carte dessin annexe colorier teinter surligner situation reperage annexe illustration"},
   {id:"matrice", t:"bien", code:"MATRICE", nom:"Relevés de matrice cadastrale", url:"https://matrice-black.vercel.app/",
    quoi:"Demandes aux services du cadastre, et suivi de ce qui est parti.",
-   cles:"matrice cadastrale sdif ptgc releve demande extrait"},
+   cles:"matrice cadastrale sdif ptgc releve demande extrait fiche proprietaire compte cadastral centre des impots fonciers releve de propriete modele 1 extrait"},
 
   {id:"marteau", t:"titres", code:"MARTEAU", nom:"Audit de portefeuille immobilier", url:"https://marteau-rho.vercel.app/",
    quoi:"Le dossier complet d’un portefeuille : il interroge les autres outils et compile le rapport.",
-   cles:"audit portefeuille rapport dossier immeuble societe"},
+   cles:"audit portefeuille rapport dossier immeuble societe diligences etat des lieux patrimoine bailleur rapport complet synthese"},
   {id:"fusion", t:"titres", code:"FUSION", nom:"Analyse des titres par société", url:"https://fusion-three-kappa.vercel.app/",
    quoi:"État hypothécaire, regroupement par unité foncière, blocs rédactionnels.",
-   cles:"fusion titre etat hypothecaire unite fonciere absorption tup groupe"},
+   cles:"fusion titre etat hypothecaire unite fonciere absorption tup groupe absorption apport designation ensemble immobilier societe absorbee unite"},
   {id:"trente", t:"titres", code:"TRENTE", nom:"Origine de propriété sur trente ans", url:"https://trente.vercel.app/",
    quoi:"Reconstituer et vérifier la chaîne trentenaire d’un immeuble.",
-   cles:"trentenaire origine propriete chaine titre acte anterieur"},
+   cles:"trentenaire origine propriete chaine titre acte anterieur prescription acquisitive vendeur precedent anteriorite publication titre de propriete"},
   {id:"histo", t:"titres", code:"HISTO", nom:"Filiation cadastrale", url:"https://histo-sand.vercel.app/",
    quoi:"L’histoire d’une parcelle chez la DGFiP : divisions, réunions, remembrements.",
-   cles:"filiation dfi genealogie parcelle division reunion remembrement ancien numero"},
+   cles:"filiation dfi genealogie parcelle division reunion remembrement ancien numero renumerotation cadastre renove ancienne parcelle feuille section disparition"},
   {id:"copro", t:"titres", code:"COPRO", nom:"Copropriété", url:"https://copro-sigma.vercel.app/",
    quoi:"Analyse du règlement et des procès-verbaux d’assemblée générale.",
-   cles:"copropriete reglement edd lot tantieme assemblee generale proces verbal syndic"},
+   cles:"copropriete reglement edd lot tantieme assemblee generale proces verbal syndic millieme tantieme lot charges carnet entretien pre etat date syndic assemblee edd"},
 
   {id:"countdown", t:"chiffre", code:"COUNTDOWN", nom:"Frais d’acte et émoluments", url:"https://countdown-kappa-azure.vercel.app/",
    quoi:"Les calculateurs : vente, donation, succession, fiducie, délais.",
-   cles:"frais acte emolument taxe calcul provision vente donation succession fiducie delai"},
+   cles:"frais acte emolument taxe calcul provision vente donation succession fiducie delai honoraires debours droits de mutation tarif simulation cout provision taxe de publicite emolument"},
   {id:"prix", t:"chiffre", code:"PRIX", nom:"Estimation et négociation", url:"https://prix-mu.vercel.app/",
    quoi:"Valeur vénale et argumentaire, à partir des ventes enregistrées.",
-   cles:"prix valeur venale estimation negociation dvf marche travaux budget"},
+   cles:"prix valeur venale estimation negociation dvf marche travaux budget comparables valeur de marche argumentaire negociation estimation bien baisse"},
   {id:"pret", t:"chiffre", code:"PRÊT", nom:"Frais de prêt — particulier", url:"https://pret-particulier.vercel.app/",
    quoi:"Coût d’une garantie et frais d’un prêt pour un particulier.",
-   cles:"pret particulier garantie hypotheque ppd frais emprunt"},
+   cles:"pret particulier garantie hypotheque ppd frais emprunt mainlevee privilege de preteur de deniers caution garantie inscription radiation"},
   {id:"pret-pro", t:"chiffre", code:"PRÊT PRO", nom:"Frais de prêt — professionnel", url:"https://pret-pro.vercel.app/",
    quoi:"Même calcul pour un financement professionnel.",
-   cles:"pret professionnel entreprise garantie frais emprunt"},
+   cles:"pret professionnel entreprise garantie frais emprunt mainlevee privilege garantie caution inscription societe financement"},
 
   {id:"moneta", t:"redige", code:"MONETA", nom:"Clausier notarial", url:"https://moneta-navy.vercel.app/",
    quoi:"Découper un acte, comparer deux rédactions, retrouver la bonne formule.",
-   cles:"clause clausier redaction promesse acte comparaison bibliotheque trame article"},
+   cles:"clause clausier redaction promesse acte comparaison bibliotheque trame article formule modele article paragraphe rubrique comparer rediger trame promesse"},
   {id:"plume", t:"redige", code:"PLUME", nom:"Statuts de SCI", url:"https://plume-mocha.vercel.app/",
    quoi:"Rédaction des statuts d’une société civile immobilière.",
-   cles:"statuts sci societe civile constitution associes gerant"},
+   cles:"statuts sci societe civile constitution associes gerant apports parts gerance objet social siege statuts societe civile"},
   {id:"consult", t:"redige", code:"CONSULT", nom:"Consultation écrite", url:"https://consult-sand.vercel.app/", pret:false,
    quoi:"Transformer un échange oral avec le client en consultation écrite. Chantier en attente.",
-   cles:"consultation ecrite client entretien note"},
+   cles:"consultation ecrite client entretien note entretien note ecrite client restitution"},
 
   {id:"coffee", t:"seance", code:"COFFEE", nom:"Outils de séance", url:"https://coffee-taupe-gamma.vercel.app/",
    quoi:"Les imprévus d’un rendez-vous : recevabilité d’une pièce, procuration, légalisation, honoraires.",
-   cles:"seance rendez-vous piece identite procuration legalisation apostille honoraires imprevu"},
+   cles:"seance rendez-vous piece identite procuration legalisation apostille honoraires imprevu identite passeport titre de sejour mandat pouvoir procuration timbre recevabilite"},
   {id:"fidal-apps", t:"seance", code:"FIDAL APPS", nom:"Les outils sur téléphone", url:"https://fidal-apps.vercel.app/",
    quoi:"Le lanceur à installer sur l’écran d’accueil — il embarque la radio et la revue de presse.",
-   cles:"telephone mobile application lanceur installer radio presse iphone"},
+   cles:"telephone mobile application lanceur installer radio presse iphone ecran accueil installer raccourci mobile"},
   {id:"carto", t:"seance", code:"CARTO", nom:"Carte des outils", url:"https://carto-six.vercel.app/",
    quoi:"Qui appelle qui, ce qui est abouti, ce qui est en chantier.",
-   cles:"carte cartographie schema avancement chantier suite organigramme"},
+   cles:"carte cartographie schema avancement chantier suite organigramme schema avancement chantier organigramme suite"},
   {id:"partage", t:"seance", code:"PARTAGE", nom:"La cave", url:"https://partage-amiable.vercel.app/",
    quoi:"Les bouteilles, leurs notes et les avis de chacun.",
-   cles:"cave vin bouteille partage amiable degustation"}
+   cles:"cave vin bouteille partage amiable degustation vin bouteille cave degustation note"}
 ];
 
 /* ==================================================================
