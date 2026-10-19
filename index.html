@@ -31,16 +31,19 @@ html,body{height:100%}
 body{
   margin:0;background:var(--fond);color:var(--texte);
   font:16px/1.5 "Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
-  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;overflow:hidden;        /* tout tient dans la fenêtre */
+  display:flex;flex-direction:column;height:100%;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
 }
 body::before{
   content:"";position:fixed;inset:-20% -10% auto;height:70vh;pointer-events:none;
   background:radial-gradient(60% 70% at 50% 0%,rgba(51,131,139,.22),transparent 70%);
 }
-.enveloppe{max-width:1240px;margin:0 auto;padding:0 26px;position:relative}
+.enveloppe{max-width:1240px;margin:0 auto;padding:0 26px;position:relative;
+  flex:1;min-height:0;display:flex;flex-direction:column;width:100%}
 
 /* ---------- en-tête ---------- */
-.barre{display:flex;align-items:center;justify-content:space-between;gap:22px;padding:20px 0 6px}
+.barre{display:flex;align-items:center;justify-content:space-between;gap:22px;padding:12px 0 2px;flex:none}
 .marque{display:flex;align-items:center;gap:13px;text-decoration:none;color:inherit}
 .trait{width:3px;height:38px;background:var(--jaune);border-radius:2px}
 .marque b{display:block;font-family:Georgia,"Times New Roman",serif;font-size:19px;letter-spacing:.14em;font-weight:400;line-height:1.1}
@@ -62,13 +65,13 @@ body::before{
 
 /* ---------- titre et recherche ---------- */
 .tete{display:flex;align-items:flex-end;justify-content:space-between;gap:30px;flex-wrap:wrap;
-  padding:14px 0 18px;position:relative}
+  padding:8px 0 10px;position:relative;flex:none}
 .tete::before,.tete::after{content:"";position:absolute;width:14px;height:14px;pointer-events:none;
   border-color:#2A5872;border-style:solid}
 .tete::before{top:0;left:-10px;border-width:1px 0 0 1px}
 .tete::after{bottom:8px;right:-10px;border-width:0 1px 1px 0}
-h1{font-family:Georgia,serif;font-weight:400;font-size:clamp(25px,3vw,34px);margin:0 0 4px;line-height:1.2}
-.tete p{margin:0;color:var(--gris);font-size:14.5px;max-width:44em}
+h1{font-family:Georgia,serif;font-weight:400;font-size:clamp(21px,2.4vw,29px);margin:0 0 2px;line-height:1.2}
+.tete p{margin:0;color:var(--gris);font-size:13px;max-width:52em}
 .champ{position:relative;width:min(380px,100%)}
 .champ input{
   width:100%;padding:12px 14px 12px 42px;font-size:15px;font-family:inherit;color:var(--texte);
@@ -77,27 +80,56 @@ h1{font-family:Georgia,serif;font-weight:400;font-size:clamp(25px,3vw,34px);marg
 .champ input::placeholder{color:#7D93A7}
 .champ input:focus{border-color:var(--jaune);background:rgba(255,255,255,.1)}
 .champ>svg{position:absolute;left:15px;top:12px;width:18px;height:18px;stroke:#7D93A7;fill:none;stroke-width:2}
-.aide{margin:7px 0 0 16px;font-size:11.5px;color:#6F8396}
+.aide{margin:5px 0 0 14px;font-size:11px;color:#6F8396}
 
 /* ---------- l’anneau ---------- */
-.ciel{position:relative;margin:0 0 4px}
-svg.carte{width:100%;height:auto;display:block;overflow:visible;min-height:340px}
+.ciel{position:relative;flex:1;min-height:0;margin:0;display:flex;align-items:stretch;gap:18px}
+svg.carte{flex:1;min-width:0}
+
+/* le panneau déporté : la description de l’outil s’affiche à côté du
+   schéma plutôt qu’en son centre, qui reste au tableau de bord */
+.fiche-laterale{
+  flex:none;width:252px;align-self:center;padding:16px 16px 16px 15px;
+  border-left:2px solid #2A5872;transition:border-color .18s;background:linear-gradient(90deg,rgba(18,42,66,.75),rgba(10,28,44,.2));
+  clip-path:polygon(0 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%);
+}
+.f-invite{margin:0;font-size:12.5px;line-height:1.5;color:#5E7A8D}
+.fiche-laterale .f-haut{margin:0 0 6px;font:600 9.5px/1 ui-monospace,Menlo,monospace;
+  letter-spacing:.18em;text-transform:uppercase}
+.fiche-laterale h3{margin:0 0 8px;font:400 19px/1.2 Georgia,serif;color:#EDF6FA}
+.fiche-laterale p.f-quoi{margin:0 0 12px;font-size:12.5px;line-height:1.5;color:#9FB8C8}
+.fiche-laterale .f-bas{margin:0;font:600 8.5px/1 ui-monospace,Menlo,monospace;
+  letter-spacing:.2em;color:#FFC900}
+.fiche-laterale .f-bas.alerte{color:#FF982D}
+.fiche-laterale .ouvrir{margin-top:12px;display:inline-block;text-decoration:none;
+  font:600 10px/1 ui-monospace,Menlo,monospace;letter-spacing:.16em;text-transform:uppercase;
+  color:#0B1D30;background:#FFC900;padding:9px 14px;border-radius:2px}
+.fiche-laterale .ouvrir:hover{filter:brightness(1.08)}
+.mention{font:600 9.5px/1 ui-monospace,Menlo,monospace;letter-spacing:.14em;color:#86AABD;
+  text-transform:uppercase;border-left:2px solid #2A5872;padding-left:8px;margin-right:10px}
+.mention:empty{display:none}
+svg.carte{width:100%;height:100%;display:block}
 .ico{fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 
 .module{cursor:pointer}
 .module:focus-visible{outline:none}
 /* les barres : quatre segments égaux, qui s’allument au survol */
 .segment{transition:opacity .18s,fill .18s}
+/* mise sous tension : chaque segment s’allume à son tour au chargement */
+@keyframes allumage{from{opacity:0}to{opacity:var(--opf,.9)}}
+.segment.allumage{animation:allumage .42s ease-out both}
 .module:hover .segment,.module:focus-visible .segment{opacity:1}
 /* le porte-pictogramme, en hexagone */
 .ecusson{transition:fill .18s,stroke-width .18s}
 .module:hover .ecusson,.module:focus-visible .ecusson{stroke-width:2.2}
 .cadre-survol{opacity:0;transition:opacity .15s}
 .module:hover .cadre-survol,.module:focus-visible .cadre-survol{opacity:.9}
-.etiquette{font:600 9.5px/1 ui-monospace,'Cascadia Mono','Segoe UI Mono',Menlo,monospace;
-  letter-spacing:.14em;fill:#8FA8BC;pointer-events:none;transition:fill .18s}
-.module:hover .etiquette,.module:focus-visible .etiquette{fill:#fff}
+.etiquette{font:600 11px/1 ui-monospace,'Cascadia Mono','Segoe UI Mono',Menlo,monospace;
+  letter-spacing:.12em;pointer-events:none;opacity:.78;transition:opacity .18s}
+.module:hover .etiquette,.module:focus-visible .etiquette{opacity:1}
 .cran{stroke:#0A1C2C;stroke-width:3}
+.rappel{transition:stroke-opacity .18s}
+.module:hover .rappel,.module:focus-visible .rappel{stroke-opacity:.95}
 .arc{transition:opacity .25s,stroke-opacity .25s}
 .eteint{opacity:.12;pointer-events:none;cursor:default}
 g.module,path.arc{transition:opacity .25s}
@@ -125,24 +157,16 @@ g.module,path.arc{transition:opacity .25s}
 .reacteur{animation:bat 3.2s ease-in-out infinite}
 .halo-coeur{animation:respire-faible 6s ease-in-out infinite}
 .indic{font:600 9.5px/1 "Segoe UI",sans-serif;letter-spacing:.22em;fill:#6E93A8}
+.au-repos{opacity:1}
+.appel-voix{font:600 9px/1 ui-monospace,Menlo,monospace;letter-spacing:.24em;fill:#5E8398;transition:fill .2s}
+.voix{cursor:pointer}
+.voix:hover ~ .coeur .appel-voix,.coeur:hover .appel-voix{fill:#FFC900}
+/* à l’écoute, le réacteur bat plus vite */
+.en-ecoute .reacteur{animation-duration:1.1s}
+.en-ecoute .gire,.en-ecoute .gire-inv{animation-duration:9s}
 .heure{font:400 30px/1 ui-monospace,'Cascadia Mono','Segoe UI Mono',Menlo,monospace;
   letter-spacing:.06em;fill:#CDEFF4}
 .cardinal{font:600 8.5px/1 ui-monospace,Menlo,monospace;letter-spacing:.1em;fill:#4E7E95;text-anchor:middle}
-
-/* ---------- cartouche ---------- */
-.cartouche{
-  position:absolute;pointer-events:none;opacity:0;transform:translate(-50%,8px);
-  background:var(--ardoise);border:1px solid var(--bord);border-left:3px solid var(--canard);
-  border-radius:6px;padding:11px 14px;width:270px;z-index:5;
-  box-shadow:0 14px 34px rgba(0,0,0,.45);transition:opacity .15s;
-  clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,0 100%);
-}
-.cartouche.visible{opacity:1}
-.cartouche b{display:block;font-size:14.5px;margin-bottom:1px}
-.cartouche em{display:block;font-style:normal;color:#7FA3B8;margin-bottom:5px;
-  font:600 10px/1 ui-monospace,Menlo,monospace;letter-spacing:.16em;text-transform:uppercase}
-.cartouche span{display:block;font-size:12.5px;color:#9FB4C6;line-height:1.45}
-.cartouche i{display:block;margin-top:7px;font-style:normal;font-size:11px;color:var(--jaune);letter-spacing:.08em}
 
 /* ---------- repli en liste ---------- */
 .repli{display:none}
@@ -155,10 +179,11 @@ g.module,path.arc{transition:opacity .25s}
 
 /* ---------- pied ---------- */
 .vide{display:none;color:var(--gris);font-size:14.5px;padding:8px 0 18px;max-width:46em}
-footer{border-top:1px solid #1B3049;margin-top:14px;padding:20px 0 40px;color:#7D93A7;font-size:13px}
+footer{border-top:1px solid #1B3049;margin-top:6px;padding:8px 0 10px;color:#7D93A7;font-size:12px;flex:none;
+  display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;align-items:baseline}
 footer a{color:var(--cyan);text-decoration:none}
 footer a:hover{text-decoration:underline}
-footer p{margin:0 0 5px}
+footer p{margin:0}
 .lien-admin{background:none;border:none;color:#5E748A;font:inherit;font-size:12.5px;cursor:pointer;padding:0;text-decoration:underline}
 .lien-admin:hover{color:var(--cyan)}
 
@@ -200,7 +225,12 @@ body.mode-admin .enveloppe{max-width:none;margin:0;padding-right:356px}
 body.mode-admin .bandeau-admin{display:block}
 .bandeau-admin .enveloppe{display:flex;justify-content:space-between;align-items:center;gap:16px}
 
+@media (max-width:1040px){ .fiche-laterale{display:none} }
 @media (max-width:720px){
+  html,body{height:auto}
+  body{overflow:visible auto;display:block}
+  .enveloppe{display:block}
+  footer{display:block}
   .ciel{display:none}
   .repli{display:block}
   .tete{align-items:flex-start}
@@ -266,7 +296,7 @@ body.mode-admin .bandeau-admin{display:block}
   <div class="tete">
     <div>
       <h1>Les outils, reliés par thème.</h1>
-      <p>Une sphère, un outil : cliquez pour l’ouvrir. Tapez ce que vous cherchez — « termites », « frais d’acte », « copropriété » — et la constellation se réduit à ce qui répond.</p>
+      <p>Un module, un outil : cliquez pour l’ouvrir. Tapez ce que vous cherchez — « termites », « frais d’acte », « copropriété » — et l’anneau se réduit à ce qui répond.</p>
     </div>
     <div class="champ">
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M16.5 16.5 L21 21"/></svg>
@@ -279,15 +309,20 @@ body.mode-admin .bandeau-admin{display:block}
   <p class="vide" id="vide">Aucun outil ne répond à ces mots. Essayez plus simple — « parcelle », « titre », « prêt ». Et si l’outil qui vous manque n’existe pas, dites-le : la suite se construit sur vos besoins.</p>
 
   <div class="ciel" id="ciel">
-    <svg class="carte" id="carte" viewBox="0 0 1200 740" role="img" aria-label="Les outils du cabinet, rangés par thème autour d’un anneau"></svg>
-    <div class="cartouche" id="cartouche" aria-hidden="true"><b></b><em></em><span></span><i>Cliquer pour ouvrir</i></div>
+    <svg class="carte" id="carte" viewBox="288 53 640 566" role="img" aria-label="Les outils du cabinet, rangés par thème autour d’un anneau"></svg>
+    <svg class="liaison" id="liaison" aria-hidden="true"><polyline id="liaison-trait"/><circle id="liaison-point"/></svg>
+    <aside class="fiche-laterale">
+      <div id="fiche" aria-live="polite">
+        <p class="f-invite">Survolez un module pour savoir ce qu’il fait, ou cliquez au centre pour demander à la voix.</p>
+      </div>
+    </aside>
   </div>
 
   <div class="repli" id="repli"></div>
 
   <footer>
-    <p>Chaque outil s’ouvre dans un nouvel onglet. Certains lisent le Drive : passez d’abord par <a href="https://connexion-omega.vercel.app/" target="_blank" rel="noopener">Ouvrir la journée</a>.</p>
-    <p>Une idée, une anomalie : écrivez à Jean-François Dumetz. <button class="lien-admin" id="ouvrir-admin">Administration</button></p>
+    <p><span class="mention" id="compte-outils"></span><span class="mention" id="coin-journee"></span>Chaque outil s’ouvre dans un nouvel onglet.</p>
+    <p><span class="mention" id="coin-masques"></span>Une anomalie, une idée : écrivez à Jean-François Dumetz. <button class="lien-admin" id="ouvrir-admin">Administration</button></p>
   </footer>
 </div>
 
@@ -461,7 +496,7 @@ let satellites = [];
    nommés sur le dessin (décision du 19/10) : le nom apparaît dans le
    cartouche au survol. Les modules se branchent à l’extérieur.
 ------------------------------------------------------------------ */
-const CX = 600, CY = 370, RAYON = 215;
+const CX = 600, CY = 336, RAYON = 203, R_COEUR = 138;
 const rad = a => a * Math.PI / 180;
 const surCercle = (a, r) => [CX + Math.cos(rad(a))*r, CY + Math.sin(rad(a))*r];
 
@@ -474,6 +509,8 @@ const surCercle = (a, r) => [CX + Math.cos(rad(a))*r, CY + Math.sin(rad(a))*r];
    réacteur lumineux au milieu. Tout en SVG : net à toute taille.
 ------------------------------------------------------------------ */
 function coeurHud(parent){
+  const k = R_COEUR / 158;                 /* tous les rayons du cadran suivent le disque */
+  const R = v => Math.round(v*k);
   const g = el("g",{class:"coeur","pointer-events":"none"});
   parent.appendChild(g);
   const O = `transform-origin:${CX}px ${CY}px`;
@@ -483,11 +520,11 @@ function coeurHud(parent){
   };
 
   /* lueur de fond */
-  g.appendChild(el("circle",{cx:CX, cy:CY, r:150, fill:"url(#halo-hud)", class:"halo-coeur"}));
+  g.appendChild(el("circle",{cx:CX, cy:CY, r:R(150), fill:"url(#halo-hud)", class:"halo-coeur"}));
 
   /* anneau extérieur : quatre arcs séparés, en rotation lente */
   const ext = el("g",{class:"gire", style:O+";--tour:44s"});
-  [0,90,180,270].forEach(a=> ext.appendChild(el("path",{d:arc(148,a+5,a+78),
+  [0,90,180,270].forEach(a=> ext.appendChild(el("path",{class:"arc-etat", d:arc(R(148),a+5,a+78),
     fill:"none", stroke:"#33838B", "stroke-opacity":".75", "stroke-width":"2", "stroke-linecap":"round"})));
   g.appendChild(ext);
 
@@ -495,47 +532,48 @@ function coeurHud(parent){
   const grad = el("g",{stroke:"#2F5873"});
   for(let k=0;k<72;k++){
     const a = k*5, longue = (k%9===0);
-    const [x1,y1] = surCercle(a,132), [x2,y2] = surCercle(a, longue?142:137);
+    const [x1,y1] = surCercle(a,R(132)), [x2,y2] = surCercle(a, longue?R(142):R(137));
     grad.appendChild(el("line",{x1,y1,x2,y2,"stroke-width": longue?"1.6":"1",
       "stroke-opacity": longue?".95":".45"}));
   }
   g.appendChild(grad);
 
   /* étiquettes cardinales */
-  [["000",-90],["090",0],["180",90],["270",180]].forEach(([txt,a])=>{
-    const [x,y] = surCercle(a,118);
+  /* la cardinale du bas est omise : sa place revient à l’appel à la voix */
+  [["000",-90],["090",0],["270",180]].forEach(([txt,a])=>{
+    const [x,y] = surCercle(a,R(118));
     const t = el("text",{class:"cardinal", x, y:y+3}); t.textContent = txt; g.appendChild(t);
   });
 
   /* couronne pointillée, sens inverse */
-  g.appendChild(el("circle",{cx:CX, cy:CY, r:108, fill:"none", stroke:"#6DD5DC",
+  g.appendChild(el("circle",{cx:CX, cy:CY, r:R(108), fill:"none", stroke:"#6DD5DC",
     "stroke-opacity":".35", "stroke-width":"1.2", "stroke-dasharray":"3 8",
     class:"gire-inv", style:O+";--tour:30s"}));
 
   /* deux arcs épais, avec un repère à chaque extrémité */
   const med = el("g",{class:"gire", style:O+";--tour:17s"});
   [[-62,8],[118,188]].forEach(([a1,a2])=>{
-    med.appendChild(el("path",{d:arc(96,a1,a2), fill:"none", stroke:"#6DD5DC",
+    med.appendChild(el("path",{d:arc(R(96),a1,a2), fill:"none", stroke:"#6DD5DC",
       "stroke-opacity":".8", "stroke-width":"3", "stroke-linecap":"round"}));
-    [a1,a2].forEach(a=>{ const [x,y] = surCercle(a,96);
+    [a1,a2].forEach(a=>{ const [x,y] = surCercle(a,R(96));
       med.appendChild(el("circle",{cx:x, cy:y, r:2.6, fill:"#BDEFF4"})); });
   });
   g.appendChild(med);
 
   /* crochets d’angle, fixes, sur les diagonales */
   [45,135,225,315].forEach(a=>{
-    const d = [arc(144,a-9,a+9)].join("");
+    const d = [arc(R(144),a-9,a+9)].join("");
     g.appendChild(el("path",{d, fill:"none", stroke:"#6DD5DC", "stroke-opacity":".55", "stroke-width":"2.5"}));
-    const [xi,yi] = surCercle(a,144), [xo,yo] = surCercle(a,154);
+    const [xi,yi] = surCercle(a,R(144)), [xo,yo] = surCercle(a,R(154));
     g.appendChild(el("line",{x1:xi,y1:yi,x2:xo,y2:yo,stroke:"#6DD5DC","stroke-opacity":".4","stroke-width":"1.2"}));
   });
 
   /* croix centrale à repères, le centre reste libre */
   const croix = el("g",{stroke:"#4E8EA3","stroke-opacity":".6","stroke-width":"1"});
   [[-1,0],[1,0],[0,-1],[0,1]].forEach(([dx,dy])=>{
-    croix.appendChild(el("line",{x1:CX+dx*62, y1:CY+dy*62, x2:CX+dx*86, y2:CY+dy*86}));
-    for(let k=1;k<=3;k++){
-      const px = CX+dx*(62+k*6), py = CY+dy*(62+k*6), l = 3.5;
+    croix.appendChild(el("line",{x1:CX+dx*R(62), y1:CY+dy*R(62), x2:CX+dx*R(86), y2:CY+dy*R(86)}));
+    for(let j=1;j<=3;j++){
+      const px = CX+dx*R(62+j*6), py = CY+dy*R(62+j*6), l = 3.5;
       croix.appendChild(el("line",{x1:px-dy*l, y1:py-dx*l, x2:px+dy*l, y2:py+dx*l}));
     }
   });
@@ -547,26 +585,39 @@ function coeurHud(parent){
     for(let k=0;k<6;k++){ const a = rot + k*60; const [x,y] = surCercle(a,r); pts.push(x.toFixed(1)+","+y.toFixed(1)); }
     return pts.join(" ");
   };
-  g.appendChild(el("polygon",{points:hexa(52,-90), fill:"none", stroke:"#6DD5DC",
+  g.appendChild(el("polygon",{points:hexa(R(52),-90), fill:"none", stroke:"#6DD5DC",
     "stroke-opacity":".5", "stroke-width":"1.3"}));
-  g.appendChild(el("polygon",{points:hexa(36,-60), fill:"none", stroke:"#33838B",
+  g.appendChild(el("polygon",{points:hexa(R(36),-60), fill:"none", stroke:"#33838B",
     "stroke-opacity":".7", "stroke-width":"1", class:"gire-inv", style:O+";--tour:38s"}));
 
   /* le réacteur */
-  g.appendChild(el("circle",{cx:CX, cy:CY, r:26, fill:"url(#reacteur-hud)", class:"reacteur", style:O}));
-  g.appendChild(el("circle",{cx:CX, cy:CY, r:7, fill:"#DFFBFF", "fill-opacity":".95"}));
+  g.appendChild(el("circle",{cx:CX, cy:CY, r:R(26), fill:"url(#reacteur-hud)", class:"reacteur", style:O}));
+  g.appendChild(el("circle",{cx:CX, cy:CY, r:R(7), fill:"#DFFBFF", "fill-opacity":".95"}));
 
   /* Les seules valeurs affichées sont vraies : l’heure, la date et le
      nombre d’outils ouverts. Pas de chiffres de décor — un faux
      indicateur finit toujours par être pris pour un vrai. */
-  const compte = el("text",{class:"indic", x:CX, y:CY-88, "text-anchor":"middle"});
-  const nb = OUTILS.filter(o=> estAdmin() || !estMasque(o.id)).length;
-  compte.textContent = nb + (nb>1 ? " OUTILS OUVERTS" : " OUTIL OUVERT");
-  g.appendChild(compte);
+  /* AU REPOS : ce que le cœur affiche quand rien n’est survolé */
+  const repos = el("g",{class:"au-repos"});
+  g.appendChild(repos);
+  /* le nombre d’outils est annoncé dans le pied : au centre il croisait
+     l’arc mobile, et deux traits qui se traversent, c’est illisible */
+  const heure = el("text",{class:"heure", x:CX, y:CY+R(78), "text-anchor":"middle"});
+  const jour  = el("text",{class:"indic", x:CX, y:CY+R(98), "text-anchor":"middle"});
+  repos.appendChild(heure); repos.appendChild(jour);
+  const appel = el("text",{class:"appel-voix", x:CX, y:CY+R(122), "text-anchor":"middle"});
+  appel.textContent = "◉  PARLER";   /* occupe le bas du cadran */
+  repos.appendChild(appel);
 
-  const heure = el("text",{class:"heure", x:CX, y:CY+78, "text-anchor":"middle"});
-  const jour  = el("text",{class:"indic", x:CX, y:CY+98, "text-anchor":"middle"});
-  g.appendChild(heure); g.appendChild(jour);
+  /* Le cœur ne porte plus la description : elle est déportée dans le
+     panneau latéral. Il garde l’heure, la date et un seul texte d’état,
+     qui invite à parler ou annonce que l’on écoute. */
+  coeurHud.etat = (texte) => { appel.textContent = texte || "◉  PARLER"; };
+  coeurHud.ecoute = (quoi) => {
+    g.classList.toggle("en-ecoute", !!quoi);
+    appel.setAttribute("fill", quoi ? "#FFC900" : "#5E8398");
+  };
+  coeurHud.repos = () => { coeurHud.etat(null); coeurHud.ecoute(false); };
 
   function rafraichir(){
     const d = new Date();
@@ -612,11 +663,15 @@ function construire(){
   ecran.appendChild(el("stop",{offset:"100%","stop-color":"#0A1C2C"}));
   defs.appendChild(ecran);
 
-  carte.appendChild(el("circle",{cx:CX, cy:CY, r:158, fill:"url(#ecran-hud)",
+  carte.appendChild(el("circle",{cx:CX, cy:CY, r:R_COEUR, fill:"url(#ecran-hud)",
     stroke:"#2A5872", "stroke-width":"1.2"}));
-  carte.appendChild(el("circle",{cx:CX, cy:CY, r:153, fill:"none",
+  carte.appendChild(el("circle",{cx:CX, cy:CY, r:R_COEUR-5, fill:"none",
     stroke:"#6DD5DC", "stroke-opacity":".14", "stroke-width":"1"}));
   coeurHud(carte);
+  /* le centre est cliquable : il ouvre la demande à la voix */
+  const zoneVoix = el("circle",{class:"voix", cx:CX, cy:CY, r:R_COEUR, fill:"transparent"});
+  zoneVoix.addEventListener("click", ()=> basculerVoix());
+  carte.appendChild(zoneVoix);
 
   /* ce qui est affiché : tout pour l’administrateur, le reste filtré */
   const montres = t => OUTILS.filter(o=>o.t===t && (estAdmin() || !estMasque(o.id)));
@@ -626,6 +681,8 @@ function construire(){
   const pas = 360 / total;
 
   let rang = 0;
+  const aPlacer = [];                 /* étiquettes à placer sans chevauchement */
+  const ecussons = [];                /* obstacles : les hexagones des modules */
   themesActifs.forEach(t=>{
     const liste = montres(t.id);
     const a1 = -90 + rang*pas - pas/2;
@@ -656,6 +713,7 @@ function construire(){
       const [xm,ym] = surCercle(a, RAYON+34);     /* centre de l’écusson */
       o._x = xm; o._y = ym;
 
+      ecussons.push({x:xm, y:ym});
       const g = el("g",{class:"module"+(estMasque(o.id)?" masque":"")});
       g.dataset.cherche = sansAccent([o.nom,o.code,o.quoi,o.cles].join(" "));
       g.dataset.theme = t.id;
@@ -670,10 +728,14 @@ function construire(){
       const tourne = `rotate(${a+90} ${CX} ${CY})`;
       for(let k=0;k<4;k++){
         const haut = RAYON - 7 - k*(segment+interstice);
-        lien.appendChild(el("rect",{class:"segment",
+        const op = (0.92 - k*0.17).toFixed(2);
+        const r = el("rect",{class:"segment allumage",
           x: CX - larg/2, y: CY - haut, width: larg, height: segment, rx:"1",
-          fill: t.couleur, opacity: (0.92 - k*0.17).toFixed(2),
-          transform: tourne}));
+          fill: t.couleur, opacity: op, transform: tourne});
+        r.style.setProperty("--opf", op);
+        /* la cascade suit l’ordre des modules sur l’anneau, puis les segments */
+        r.style.animationDelay = (90 + (rang+i)*34 + k*55) + "ms";
+        lien.appendChild(r);
       }
 
       /* le cran sur l’anneau, à l’aplomb du module : l’anneau paraît segmenté */
@@ -696,18 +758,24 @@ function construire(){
       u.setAttribute("pointer-events","none");
       lien.appendChild(u);
 
-      /* l’étiquette, dans l’axe du rayon, retournée dans la moitié gauche */
-      const gauche = (a > 90 || a < -90);
-      const [xl,yl] = surCercle(a, RAYON+58);
-      const ge = el("g",{transform:`translate(${xl},${yl}) rotate(${gauche ? a+180 : a})`,
-                         "pointer-events":"none"});
-      const tx = el("text",{class:"etiquette", "text-anchor":gauche?"end":"start", y:"3.5"});
+      /* L’ÉTIQUETTE reste près de son module, horizontale. Sa position
+         définitive est calculée plus bas : elle est repoussée vers
+         l’extérieur tant qu’elle touche un écusson ou une autre étiquette. */
+      const cos = Math.cos(rad(a)), sin = Math.sin(rad(a));
+      let ancre = "middle", dy = 4;
+      if(Math.abs(cos) < 0.30){ dy = sin < 0 ? -8 : 16; }
+      else ancre = cos > 0 ? "start" : "end";
+      const trait = el("polyline",{class:"rappel", fill:"none", stroke:t.couleur,
+        "stroke-opacity":".6", "stroke-width":"1.1", "pointer-events":"none"});
+      lien.appendChild(trait);
+      const tx = el("text",{class:"etiquette", "text-anchor":ancre, "pointer-events":"none"});
+      tx.setAttribute("fill", melange(t.couleur,.55,true));   /* teintée de son thème */
       tx.textContent = o.code;
-      ge.appendChild(tx);
-      lien.appendChild(ge);
+      lien.appendChild(tx);
+      aPlacer.push({tx, trait, a, ancre, dy, xm, ym});
 
-      lien.addEventListener("mouseenter", ()=>montrer(o,g));
-      lien.addEventListener("focus",      ()=>montrer(o,g));
+      lien.addEventListener("mouseenter", ()=>montrer(o, lien));
+      lien.addEventListener("focus",      ()=>montrer(o, lien));
       lien.addEventListener("mouseleave", cacher);
       lien.addEventListener("blur",       cacher);
 
@@ -732,26 +800,168 @@ function construire(){
 
     rang += liste.length;
   });
+  placerEtiquettes(aPlacer, ecussons);
+  cadrer(aPlacer, ecussons);
+  if(typeof etatJourneeCourant !== "undefined" && etatJourneeCourant) poserJournee(etatJourneeCourant);
+  const compteur = document.getElementById("compte-outils");
+  if(compteur) compteur.textContent = total + (total>1 ? " outils ouverts" : " outil ouvert");
+
   filtrer();
+  clearTimeout(construire._fin);
+  construire._fin = setTimeout(()=>{
+    carte.querySelectorAll(".segment.allumage").forEach(n=> n.classList.remove("allumage"));
+  }, 90 + total*34 + 4*55 + 500);
+}
+
+/* ------------------------------------------------------------------
+   PLACEMENT DES ÉTIQUETTES
+   Largeur mesurée pour la police réelle, majorée par sécurité, puis on
+   écarte radialement tant que la boîte touche un écusson ou une
+   étiquette déjà posée : c’est ce qui garantit l’absence de superposition.
+------------------------------------------------------------------ */
+const LARG_SIGNE = 8.7;               /* 11 px monospace, largeur majorée */
+const HAUT_SIGNE = 11;
+
+function boite(e, r){
+  const [x,y] = surCercle(e.a, r);
+  const l = e.tx.textContent.length * LARG_SIGNE;
+  const x0 = e.ancre === "start" ? x : e.ancre === "end" ? x - l : x - l/2;
+  const yb = y + e.dy;
+  return {x0, x1:x0+l, y0: yb - HAUT_SIGNE, y1: yb + 3, x, y:yb};
+}
+const seTouchent = (A,B,m=4) => A.x0 < B.x1+m && B.x0 < A.x1+m && A.y0 < B.y1+m && B.y0 < A.y1+m;
+
+/* Deux couronnes nettes plutôt qu’un écartement au pas à pas : l’œil
+   voit un ordre, et le trait de rappel a la place de s’étirer. */
+const COURONNES = [RAYON + 86, RAYON + 118, RAYON + 150];
+
+function placerEtiquettes(liste, ecussons){
+  const obstacles = ecussons.map(e=>({x0:e.x-25, x1:e.x+25, y0:e.y-25, y1:e.y+25}));
+  const posees = [];
+  liste.forEach(e=>{
+    let r = COURONNES[0], b = boite(e, r);
+    for(const essai of COURONNES){
+      r = essai; b = boite(e, r);
+      if(!obstacles.some(o=> seTouchent(b,o,2)) && !posees.some(p=> seTouchent(b,p,4))) break;
+    }
+    e.tx.setAttribute("x", b.x);
+    e.tx.setAttribute("y", b.y);
+    e.boite = b;
+    posees.push(b);
+
+    /* LE TRAIT DE CONDUITE : il quitte le bord de l’écusson, rejoint la
+       hauteur du nom, puis vient l’accoster à l’horizontale. C’est le
+       dernier segment, horizontal, qui fait lire les deux comme un tout. */
+    const [xa,ya] = surCercle(e.a, RAYON + 56);
+    const milieu = b.y - 4;                       /* milieu visuel du texte */
+    let points;
+    if(e.ancre === "middle"){                     /* en haut ou en bas de l’anneau */
+      const cible = e.dy < 0 ? b.y + 4 : b.y - 12;
+      points = `${xa.toFixed(1)},${ya.toFixed(1)} ${b.x.toFixed(1)},${cible.toFixed(1)}`;
+    }else{
+      const sens = e.ancre === "start" ? 1 : -1;
+      const bout = (e.ancre === "start" ? b.x0 : b.x1) - sens*7;
+      const coude = bout - sens*16;
+      points = `${xa.toFixed(1)},${ya.toFixed(1)} ${coude.toFixed(1)},${milieu.toFixed(1)} ${bout.toFixed(1)},${milieu.toFixed(1)}`;
+    }
+    e.trait.setAttribute("points", points);
+  });
+}
+
+/* Le cadre du dessin est calculé sur ce qui a réellement été tracé :
+   il s’ajuste donc tout seul quand des outils sont masqués. */
+function cadrer(liste, ecussons){
+  let x0=CX-R_COEUR, x1=CX+R_COEUR, y0=CY-R_COEUR, y1=CY+R_COEUR;
+  ecussons.forEach(e=>{ x0=Math.min(x0,e.x-28); x1=Math.max(x1,e.x+28);
+                        y0=Math.min(y0,e.y-28); y1=Math.max(y1,e.y+28); });
+  liste.forEach(e=>{ const b=e.boite; if(!b) return;
+    x0=Math.min(x0,b.x0); x1=Math.max(x1,b.x1); y0=Math.min(y0,b.y0); y1=Math.max(y1,b.y1); });
+  const m = 14;
+  carte.setAttribute("viewBox", `${Math.round(x0-m)} ${Math.round(y0-m)} ${Math.round(x1-x0+2*m)} ${Math.round(y1-y0+2*m)}`);
 }
 
 /* ---------------- cartouche ---------------- */
-const cartouche = document.getElementById("cartouche");
-const ciel = document.getElementById("ciel");
+/* ------------------------------------------------------------------
+   LE PANNEAU DÉPORTÉ
+   Tout ce qui s’explique — la description d’un outil, le résultat d’une
+   demande à la voix — s’affiche ici, à côté du schéma. Le centre de
+   l’anneau reste au tableau de bord.
+------------------------------------------------------------------ */
+const panneau = document.getElementById("fiche");
+
+function ficheInvite(){
+  delier();
+  panneau.innerHTML = '<p class="f-invite">Survolez un module pour savoir ce qu’il fait, ' +
+    'ou cliquez au centre pour demander à la voix.</p>';
+}
+function ficheEcrire({haut, titre, quoi, bas, couleur, url, alerte}){
+  panneau.innerHTML =
+    (haut  ? `<p class="f-haut" style="color:${couleur||"#6DD5DC"}">${haut}</p>` : "") +
+    (titre ? `<h3>${titre}</h3>` : "") +
+    (quoi  ? `<p class="f-quoi">${quoi}</p>` : "") +
+    (url   ? `<a class="ouvrir" href="${url}" target="_blank" rel="noopener">Ouvrir</a>` : "") +
+    (bas   ? `<p class="f-bas${alerte ? " alerte" : ""}">${bas}</p>` : "");
+}
+
+const couche = document.getElementById("liaison");
+const traitLien = document.getElementById("liaison-trait");
+const pointLien = document.getElementById("liaison-point");
+
+/* Relie l’écusson d’un module au panneau qui le décrit. Les modules de
+   droite sont rejoints directement ; ceux de gauche par une gouttière,
+   au-dessus ou au-dessous du dessin — jamais au travers de l’anneau. */
+function relier(noeud, couleur){
+  const ciel = document.getElementById("ciel");
+  const pan  = document.querySelector(".fiche-laterale");   /* le panneau, pas son contenu */
+  if(!noeud || !ciel || !pan || pan.offsetParent === null){ couche.classList.remove("visible"); return; }
+  const c = ciel.getBoundingClientRect();
+  const e = noeud.getBoundingClientRect();
+  const p = pan.getBoundingClientRect();
+  if(!c.width || !p.width) return;
+
+  couche.setAttribute("viewBox", `0 0 ${Math.round(c.width)} ${Math.round(c.height)}`);
+  const ax = e.right - c.left, ay = e.top + e.height/2 - c.top;
+  const cx = p.left - c.left - 3, cy = p.top - c.top + 30;
+  const pivot = cx - 22;
+  let pts;
+  if(ax > c.width/2 - 40){
+    pts = [[ax,ay],[pivot,ay],[pivot,cy],[cx,cy]];
+  }else{
+    const gouttiere = (ay < c.height/2) ? 10 : c.height - 10;
+    const depart = e.left + e.width/2 - c.left;
+    pts = [[depart, ay<c.height/2 ? e.top-c.top : e.bottom-c.top],
+           [depart,gouttiere],[pivot,gouttiere],[pivot,cy],[cx,cy]];
+  }
+  traitLien.setAttribute("points", pts.map(q=> q[0].toFixed(0)+","+q[1].toFixed(0)).join(" "));
+  traitLien.setAttribute("stroke", couleur);
+  pointLien.setAttribute("cx", cx); pointLien.setAttribute("cy", cy);
+  pointLien.setAttribute("fill", couleur);
+  couche.classList.add("visible");
+  pan.style.borderLeftColor = couleur;
+}
+/* au redimensionnement, le trajet calculé n’est plus juste : on l’efface */
+window.addEventListener("resize", ()=> delier());
+
+function delier(){
+  couche.classList.remove("visible");
+  const pan = document.querySelector(".fiche-laterale");
+  if(pan) pan.style.borderLeftColor = "";
+}
+
 function montrer(o, noeud){
   const theme = THEMES.find(x=>x.id===o.t);
-  cartouche.querySelector("b").textContent = o.nom;
-  cartouche.querySelector("em").textContent = theme.nom + " · " + o.code;
-  cartouche.querySelector("span").textContent = o.quoi;
-  cartouche.querySelector("i").textContent = estMasque(o.id) ? "Masqué aux collaborateurs" : "Cliquer pour ouvrir";
-  cartouche.style.borderLeftColor = THEMES.find(x=>x.id===o.t).couleur;
-  const r = noeud.getBoundingClientRect(), c = ciel.getBoundingClientRect();
-  let x = r.left + r.width/2 - c.left;
-  cartouche.style.left = Math.max(145, Math.min(c.width-145, x))+"px";
-  cartouche.style.top  = (r.bottom - c.top + 10)+"px";
-  cartouche.classList.add("visible");
+  relier(noeud, theme.couleur);
+  ficheEcrire({haut: theme.nom + " · " + o.code, titre: o.nom, quoi: o.quoi,
+               couleur: theme.couleur,
+               bas: estMasque(o.id) ? "Masqué aux collaborateurs" : "Cliquer sur le module pour ouvrir",
+               alerte: estMasque(o.id)});
 }
-function cacher(){ cartouche.classList.remove("visible"); }
+function cacher(){
+  /* si une demande vocale a proposé un outil, le panneau y revient :
+     sans cela le centre resterait armé sur un outil qu’il n’affiche plus */
+  if(outilPropose && coeurHud.rappel) coeurHud.rappel();
+  else { delier(); ficheInvite(); }
+}
 
 /* ---------------- recherche ---------------- */
 const saisie = document.getElementById("q");
@@ -762,12 +972,13 @@ function filtrer(){
   const mots = sansAccent(saisie.value.trim()).split(/\s+/).filter(Boolean);
   const vus = new Set(); let n = 0;
   satellites.forEach(({o,noeud})=>{
-    const ok = mots.every(m => noeud.dataset.cherche.includes(m));
+    const ok = (selection ? selection.includes(o.id) : true)
+            && mots.every(m => noeud.dataset.cherche.includes(m));
     noeud.classList.toggle("eteint", !ok);
     if(ok){ n++; vus.add(o.t); }
   });
   carte.querySelectorAll(".arc, .influx[data-theme]").forEach(a=>
-    a.classList.toggle("eteint", mots.length && !vus.has(a.dataset.theme)));
+    a.classList.toggle("eteint", (mots.length || selection) && !vus.has(a.dataset.theme)));
   const lignes = [...repli.querySelectorAll("a")];
   lignes.forEach(l=> l.hidden = !mots.every(m => l.dataset.cherche.includes(m)));
   repli.querySelectorAll("h2").forEach(h=>
@@ -776,7 +987,7 @@ function filtrer(){
   compte.textContent = n ? n + (n>1 ? " outils trouvés" : " outil trouvé") : "Aucun outil ne correspond";
   cacher();
 }
-saisie.addEventListener("input", filtrer);
+saisie.addEventListener("input", ()=>{ if(selection){ selection=null; outilPropose=null; coeurHud.repos(); ficheInvite(); } filtrer(); });
 saisie.addEventListener("keydown", e=>{
   if(e.key==="Enter"){
     const premier = satellites.find(s=>!s.noeud.classList.contains("eteint"));
@@ -859,11 +1070,13 @@ function entrerAdmin(){
   document.body.classList.add("mode-admin");
   construireAdmin();
   construire();
+  majCoinMasques();
 }
 document.getElementById("sortir-admin").addEventListener("click", ()=>{
   sessionStorage.removeItem("phare-admin");
   document.body.classList.remove("mode-admin");
   construire();
+  majCoinMasques();
 });
 document.getElementById("changer-code").addEventListener("click", ()=>ouvrirBoite("changer"));
 
@@ -871,6 +1084,13 @@ function etat(texte){
   etatAdm.textContent = texte;
   clearTimeout(etat._t);
   etat._t = setTimeout(()=>{ etatAdm.textContent = ""; }, 6000);
+}
+
+function majCoinMasques(){
+  const coin = document.getElementById("coin-masques");
+  if(!coin) return;
+  const n = OUTILS.filter(o=> estMasque(o.id)).length;
+  coin.textContent = (estAdmin() && n) ? n + (n>1 ? " outils masqués" : " outil masqué") : "";
 }
 
 function construireAdmin(){
@@ -887,7 +1107,7 @@ function construireAdmin(){
       c.addEventListener("change", async ()=>{
         const avant = masques.slice();
         masques = c.checked ? masques.filter(x=>x!==o.id) : masques.concat([o.id]);
-        construire();
+        construire(); majCoinMasques();
         try{ await ecrireReglages(); etat("Enregistré à "+new Date().toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})+"."); }
         catch(e){
           masques = avant; c.checked = !estMasque(o.id); construire();
@@ -903,7 +1123,164 @@ function construireAdmin(){
 }
 
 /* ==================================================================
-   5. ÉTAT DE LA JOURNÉE
+   5. DEMANDE À LA VOIX
+   Un clic au centre ouvre l’écoute. Ce qui est dit est transformé en
+   texte par le navigateur — donc par son éditeur, pas par nous — puis
+   comparé ICI au vocabulaire des outils : aucun envoi vers un modèle,
+   PHARE n’ayant pas de serveur à lui.
+================================================================== */
+const MOTS_VIDES = new Set(("je tu il elle on nous vous ils elles me te se mon ma mes ton ta tes son sa ses " +
+  "le la les un une des du de d l au aux et ou ou bien mais donc or ni car que qui quoi dont " +
+  "ce cet cette ces c est sont ai as a ont avoir etre suis es sommes etes " +
+  "veux veut voudrais souhaite cherche chercher trouver besoin faire fais fait comment pourquoi " +
+  "pour par avec sans sur sous dans en y il faut plus moins tres bien ok alors " +
+  "bonjour merci svp plait peux peut pouvez savoir dire").split(" "));
+
+function motsUtiles(phrase){
+  return sansAccent(phrase)
+    .replace(/[^a-z0-9\s]/g," ")
+    .split(/\s+/)
+    .filter(m=> m.length > 2 && !MOTS_VIDES.has(m));
+}
+
+/* Classement : le nom pèse plus que les mots-clés, qui pèsent plus que
+   la description. Un mot long compte à partir de sa racine. */
+function classer(phrase){
+  const mots = motsUtiles(phrase);
+  if(!mots.length) return [];
+  const visibles = OUTILS.filter(o=> estAdmin() || !estMasque(o.id));
+  const notes = visibles.map(o=>{
+    const champs = [[sansAccent(o.nom),3],[sansAccent(o.cles),2],[sansAccent(o.quoi),1],
+                    [sansAccent(o.code),3]];
+    let note = 0, touches = 0;
+    mots.forEach(m=>{
+      let meilleur = 0;
+      champs.forEach(([texte,poids])=>{
+        const trouve = m.length >= 5
+          ? texte.split(/\s+/).some(t=> t.startsWith(m.slice(0, Math.max(4, m.length-2))))
+          : texte.split(/\s+/).includes(m);
+        if(trouve) meilleur = Math.max(meilleur, poids);
+      });
+      if(meilleur){ note += meilleur; touches++; }
+    });
+    return {o, note: note * (1 + touches*0.25)};
+  }).filter(x=> x.note > 0);
+  notes.sort((a,b)=> b.note - a.note);
+  return notes;
+}
+
+let selection = null;          /* ids mis en avant par la voix, ou null */
+let outilPropose = null;
+
+function mettreEnAvant(ids){
+  selection = ids && ids.length ? ids : null;
+  filtrer();
+}
+
+const Reconnaissance = window.SpeechRecognition || window.webkitSpeechRecognition;
+let ecouteur = null, enEcoute = false;
+
+function basculerVoix(){
+  /* si un outil vient d’être proposé, le clic suivant l’ouvre */
+  if(outilPropose && !enEcoute){
+    const url = outilPropose.url; outilPropose = null;
+    coeurHud.repos(); mettreEnAvant(null);
+    window.open(url, "_blank", "noopener");
+    return;
+  }
+  if(enEcoute){ try{ ecouteur.stop(); }catch(e){} return; }
+  if(!Reconnaissance){
+    ficheEcrire({haut:"Demande à la voix", titre:"Non disponible",
+      quoi:"Ce navigateur ne sait pas transcrire la parole. Utilisez la recherche, en haut de page.",
+      couleur:"#FF982D"});
+    setTimeout(()=>{ ficheInvite(); saisie.focus(); }, 4000);
+    return;
+  }
+  ecouteur = new Reconnaissance();
+  ecouteur.lang = "fr-FR";
+  ecouteur.interimResults = true;
+  ecouteur.maxAlternatives = 1;
+  ecouteur.continuous = false;
+  let dernier = "";
+
+  ecouteur.onstart = ()=>{
+    enEcoute = true; outilPropose = null;
+    coeurHud.ecoute(true);
+    coeurHud.etat("◉  À L’ÉCOUTE");
+    ficheEcrire({haut:"À l’écoute", titre:"Dites ce que vous cherchez",
+      quoi:"« les termites sur la commune », « les frais d’une donation », « les millièmes d’une copropriété »…",
+      bas:"Cliquer au centre pour arrêter", couleur:"#6DD5DC"});
+  };
+  ecouteur.onresult = (e)=>{
+    dernier = Array.from(e.results).map(r=> r[0].transcript).join(" ").trim();
+    if(dernier) ficheEcrire({haut:"À l’écoute", titre:"…", quoi:"« "+dernier+" »",
+      bas:"Cliquer au centre pour arrêter", couleur:"#6DD5DC"});
+  };
+  ecouteur.onerror = (e)=>{
+    enEcoute = false; coeurHud.ecoute(false);
+    const cause = e.error === "not-allowed" ? "Le micro n’est pas autorisé pour ce site."
+                : e.error === "no-speech"   ? "Je n’ai rien entendu."
+                : "L’écoute s’est interrompue.";
+    coeurHud.etat(null);
+    ficheEcrire({haut:"Demande à la voix", titre:"Écoute impossible", quoi:cause, couleur:"#FF982D"});
+    setTimeout(()=> ficheInvite(), 4200);
+  };
+  ecouteur.onend = ()=>{
+    enEcoute = false; coeurHud.ecoute(false);
+    if(!dernier){ coeurHud.repos(); return; }
+    repondre(dernier);
+  };
+  try{ ecouteur.start(); }
+  catch(e){ ficheEcrire({haut:"Demande à la voix", titre:"Écoute impossible",
+              quoi:"Réessayez dans un instant.", couleur:"#FF982D"});
+            setTimeout(()=> ficheInvite(), 3400); }
+}
+
+/* coupe au dernier mot entier, sans laisser de syllabe orpheline */
+function couper(texte, n){
+  if(texte.length <= n) return texte;
+  const bout = texte.slice(0, n);
+  const espace = bout.lastIndexOf(" ");
+  return (espace > n*0.5 ? bout.slice(0, espace) : bout) + "…";
+}
+
+function repondre(phrase){
+  const notes = classer(phrase);
+  if(!notes.length){
+    mettreEnAvant(null);
+      ficheEcrire({haut:"Entendu", titre:"Aucun outil trouvé",
+      quoi:"« "+phrase+" » — essayez avec un mot du métier : parcelle, frais, copropriété, clause…",
+      bas:"Cliquer au centre pour recommencer", couleur:"#FF982D", alerte:true});
+    coeurHud.rappel = null;
+    return;
+  }
+  const retenus = notes.slice(0,3);
+  mettreEnAvant(retenus.map(x=> x.o.id));
+  const premier = retenus[0].o;
+  outilPropose = premier;
+  const theme = THEMES.find(x=> x.id === premier.t);
+  const autres = retenus.slice(1).map(x=> x.o.code).join(", ");
+  const ecrire = ()=> ficheEcrire({
+    haut: "Entendu · « " + couper(phrase, 34) + " »",
+    titre: premier.nom,
+    quoi: premier.quoi + (autres ? " — aussi proposés : " + autres + "." : ""),
+    url: premier.url,
+    bas: "Ou cliquer au centre pour ouvrir",
+    couleur: theme.couleur});
+  ecrire();
+  coeurHud.rappel = ecrire;   /* pour y revenir après un survol */
+  /* le trait relie aussi le résultat vocal à l’outil qu’il désigne */
+  const cible = satellites.find(x=> x.o.id === premier.id);
+  if(cible) relier(cible.noeud.querySelector("a") || cible.noeud, theme.couleur);
+}
+
+/* Échap rend la main */
+document.addEventListener("keydown", e=>{
+  if(e.key === "Escape"){ outilPropose = null; coeurHud.repos(); delier(); ficheInvite(); mettreEnAvant(null); }
+});
+
+/* ==================================================================
+   6. ÉTAT DE LA JOURNÉE
    On ne peut pas lire la trace laissée par MORNING : chaque site a son
    propre espace de stockage. On demande donc un jeton SANS ÉCRAN
    (prompt « none ») : s’il revient, les outils accéderont au Drive sans
@@ -916,7 +1293,20 @@ const lienJournee  = document.getElementById("lien-journee");
 const texteJournee = document.getElementById("texte-journee");
 
 function poserJournee(etat){
+  etatJourneeCourant = etat;
   lienJournee.className = etat;
+  const coin = document.getElementById("coin-journee");
+  if(coin) coin.textContent = etat === "ouverte" ? "Accès Drive actif"
+                            : etat === "fermee"  ? "Accès Drive à ouvrir" : "";
+
+  /* L’état ne figure plus dans le panneau de description : il se lit sur
+     l’anneau extérieur du cadran, qui en prend la couleur, et sur le
+     raccourci de la barre du haut. */
+  const teinte = etat === "ouverte" ? "#46B98A" : etat === "fermee" ? "#FF982D" : "#33838B";
+  carte.querySelectorAll(".arc-etat").forEach(a=>{
+    a.setAttribute("stroke", teinte);
+    a.setAttribute("stroke-opacity", etat === "inconnu" || !etat ? ".45" : ".85");
+  });
   if(etat === "ouverte"){
     texteJournee.textContent = "Journée ouverte";
     lienJournee.title = "Les outils accèdent au Drive sans nouvel écran. Cliquer pour revoir l’état des services.";
@@ -929,6 +1319,7 @@ function poserJournee(etat){
   }
 }
 
+let etatJourneeCourant = null;
 let verificationEnCours = false;
 async function verifierJournee(){
   if(verificationEnCours) return;
@@ -948,7 +1339,7 @@ document.addEventListener("visibilitychange", ()=>{
 });
 
 /* ==================================================================
-   6. DÉMARRAGE
+   7. DÉMARRAGE
 ================================================================== */
 construire();                 /* affichage immédiat, sans attendre la base */
 lireReglages().then(()=>{
