@@ -258,6 +258,16 @@ body.mode-admin .bandeau-admin{display:block}
   .influx{display:none}
   *{transition:none!important}
 }
+
+/* ---------- bloc titre commun à PHARE et SUIVI (harmonisé le 22/10/2026) ----------
+   Une seule répartition pour les deux pages : à gauche le titre et sa ligne d'explication,
+   à droite la recherche et sa ligne d'aide, sur la même ligne et alignées par le bas.
+   La recherche ne passe plus sous le titre tant que la fenêtre dépasse 720 points. */
+.tete{flex-wrap:nowrap}
+.tete>div:first-child{flex:1 1 auto;min-width:0}
+.champ{display:block;flex:0 0 clamp(240px,30vw,380px);width:auto}
+.aide{margin:5px 0 0 14px;font-size:11px;color:#6F8396}
+@media (max-width:720px){ .tete{flex-wrap:wrap} .champ{flex:1 1 100%} }
 </style>
 </head>
 <body>
