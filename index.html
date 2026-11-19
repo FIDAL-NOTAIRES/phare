@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PHARE — Les outils</title>
+<title>PLATEFORME — Les outils</title>
 <meta name="description" content="Les outils, reliés par thème. Une sphère, un outil.">
 <meta name="theme-color" content="#081625">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%2064%2064%27%3E%3Crect%20width%3D%2764%27%20height%3D%2764%27%20rx%3D%2713%27%20fill%3D%27%230F2238%27%2F%3E%3Cpath%20d%3D%27M32%2030%2032%2014M32%2034%2048%2045M32%2034%2016%2045%27%20stroke%3D%27%232E4D68%27%20stroke-width%3D%272%27%2F%3E%3Ccircle%20cx%3D%2732%27%20cy%3D%2732%27%20r%3D%278%27%20fill%3D%27none%27%20stroke%3D%27%23FFC900%27%20stroke-width%3D%272%27%2F%3E%3Ccircle%20cx%3D%2732%27%20cy%3D%2713%27%20r%3D%277%27%20fill%3D%27%2333838B%27%2F%3E%3Ccircle%20cx%3D%2749%27%20cy%3D%2746%27%20r%3D%277%27%20fill%3D%27%23A01040%27%2F%3E%3Ccircle%20cx%3D%2715%27%20cy%3D%2746%27%20r%3D%277%27%20fill%3D%27%236DD5DC%27%2F%3E%3C%2Fsvg%3E">
@@ -202,6 +202,27 @@ footer p{margin:0}
 .lien-admin{background:none;border:none;color:#5E748A;font:inherit;font-size:12.5px;cursor:pointer;padding:0;text-decoration:underline}
 .lien-admin:hover{color:var(--cyan)}
 
+/* ---------- 16/11/2026 : connexion des personnes, outils en attente d’ouverture d’accès ---------- */
+.porte{position:fixed;inset:0;background:var(--fond);display:none;align-items:center;justify-content:center;z-index:60;padding:20px;overflow:auto}
+.porte.ouvert{display:flex}
+.porte .boite{box-shadow:none}
+.porte .marque{margin-bottom:22px}
+.porte label{display:block;font-size:12px;color:var(--gris);margin:0 0 4px}
+.porte .lien{background:none;border:0;padding:0;font:inherit;font-size:13px;color:var(--cyan);cursor:pointer;text-decoration:underline}
+.porte .boutons{align-items:center;justify-content:space-between}
+.raccourcis .qui{color:var(--texte);padding:7px 6px 7px 12px;white-space:nowrap;font-size:13px;align-self:center}
+.raccourcis button{background:none;cursor:pointer;color:#A8BBCB;padding:7px 12px;border-radius:2px;border:1px solid transparent;white-space:nowrap;
+  font:600 11px/1.5 ui-monospace,'Cascadia Mono','Segoe UI Mono',Menlo,monospace;letter-spacing:.14em;text-transform:uppercase}
+.raccourcis button:hover,.raccourcis button:focus-visible{color:#fff;border-color:var(--bord);background:rgba(255,255,255,.05)}
+.attente .segment{opacity:.16}
+.attente .ecusson{opacity:.5;stroke-dasharray:3 3}
+.attente .etiquette{fill:#7D93A7}
+.attente .recent{display:none}
+.repli a.attente b{color:var(--gris)}
+.repli a.attente em{display:block;font-style:normal;font-size:12px;color:var(--orange);margin-top:3px}
+.boite a.action[hidden]{display:none}
+.boite a.action{display:inline-block;text-decoration:none;font-size:14px;padding:9px 16px;border-radius:6px;background:var(--jaune);border:1px solid var(--jaune);color:#1B2A3A;font-weight:600}
+
 /* ---------- boîte de code ---------- */
 .voile{position:fixed;inset:0;background:rgba(4,10,18,.78);display:none;align-items:center;justify-content:center;z-index:40;padding:20px}
 .voile.ouvert{display:flex}
@@ -308,7 +329,7 @@ body.mode-admin .bandeau-admin{display:block}
 
 <div class="enveloppe">
   <div class="barre">
-    <a class="marque" href="./" aria-label="PHARE, accueil">
+    <a class="marque" href="./" aria-label="PLATEFORME, accueil">
       <span class="trait" aria-hidden="true"></span>
       <span><b>FIDAL</b><span>NOTAIRES</span></span>
     </a>
@@ -316,6 +337,9 @@ body.mode-admin .bandeau-admin{display:block}
       <a id="lien-journee" href="https://connexion-omega.vercel.app/" target="_blank" rel="noopener"><span class="voyant" id="voyant-journee" aria-hidden="true"></span><span id="texte-journee">Ouvrir la journée</span></a>
       <a href="https://carto-six.vercel.app/" target="_blank" rel="noopener">Carte des outils</a>
       <a href="https://fidal-apps.vercel.app/" target="_blank" rel="noopener">Sur téléphone</a>
+      <span class="qui" id="qui"></span>
+      <button type="button" id="changer-mdp" hidden>Mot de passe</button>
+      <button type="button" id="deconnexion" hidden>Se déconnecter</button>
     </nav>
   </div>
 
@@ -335,7 +359,7 @@ body.mode-admin .bandeau-admin{display:block}
   <p class="vide" id="vide">Aucun outil ne répond à ces mots. Essayez plus simple — « parcelle », « titre », « prêt ». Et si l’outil qui vous manque n’existe pas, dites-le : la suite se construit sur vos besoins.</p>
 
   <div class="ciel" id="ciel">
-    <svg class="carte" id="carte" viewBox="288 53 640 566" role="img" aria-label="Les outils du cabinet, rangés par thème autour d’un anneau"></svg>
+    <svg class="carte" id="carte" viewBox="288 53 640 566" role="img" aria-label="Les outils de l’étude, rangés par thème autour d’un anneau"></svg>
     <svg class="liaison" id="liaison" aria-hidden="true"
          style="position:absolute;inset:0;pointer-events:none"><polyline id="liaison-trait" fill="none"/><circle id="liaison-point" r="3" fill="none"/></svg>
     <aside class="fiche-laterale">
@@ -372,6 +396,27 @@ body.mode-admin .bandeau-admin{display:block}
       <button class="action" id="boite-annuler">Annuler</button>
       <button class="action fort" id="boite-valider">Valider</button>
     </div>
+  </div>
+</div>
+
+<div class="porte ouvert" id="porte" role="dialog" aria-modal="true" aria-labelledby="porte-titre">
+  <div>
+    <div class="marque"><span class="trait" aria-hidden="true"></span><span><b>FIDAL</b><span>NOTAIRES</span></span></div>
+    <form class="boite" id="porte-forme" autocomplete="on">
+      <h3 id="porte-titre">Connexion</h3>
+      <p id="porte-texte">Vérification de votre connexion…</p>
+      <div id="porte-champs"></div>
+      <p class="erreur" id="porte-erreur" role="alert"></p>
+      <div class="boutons"><button type="button" class="lien" id="porte-lien" hidden></button><button type="submit" class="action fort" id="porte-valider" hidden>Se connecter</button></div>
+    </form>
+  </div>
+</div>
+
+<div class="voile" id="voile-attente" role="dialog" aria-modal="true" aria-labelledby="attente-titre">
+  <div class="boite">
+    <h3 id="attente-titre"></h3>
+    <p id="attente-texte"></p>
+    <div class="boutons"><button type="button" class="action" id="attente-fermer">Fermer</button><a class="action" id="attente-demander" href="#">Demander l’accès</a></div>
   </div>
 </div>
 
@@ -554,6 +599,23 @@ function retenirRecent(id){
   try{ localStorage.setItem(CLE_RECENTS, JSON.stringify(recents)); }catch(e){}
 }
 const estMasque = id => masques.includes(id);
+
+/* ------------------------------------------------------------------
+   16/11/2026 — CONNEXION DES PERSONNES ET DROITS D’ACCÈS
+   Les comptes et les droits sont tenus dans CARNET (tableau « Accès »).
+   Un outil non ouvert à la personne reste affiché, « en attente
+   d’ouverture d’accès », avec une demande par courriel déjà rédigée.
+   Cette page n’est pas un verrou : chaque outil vérifiera lui-même les
+   droits à son ouverture (étape suivante).
+------------------------------------------------------------------ */
+const CARNET = "https://carnet-ivory.vercel.app/api/carnet";
+const CLE_SESSION = "plateforme-session", CLE_DROITS = "plateforme-droits", CLE_DROITS_LE = "plateforme-droits-le";
+/* 16/11/2026 au soir : si CARNET ne répond pas, les derniers droits connus valent SEPT JOURS au plus */
+const REPLI_MS = 7 * 24 * 60 * 60 * 1000;
+let droitsLe = 0;
+let session = null;            /* { jeton, expire, personne:{prenom,nom}, contact } */
+let droits = {};               /* { identifiant d’outil : niveau } — vide tant que personne n’est connecté */
+const aAcces = id => (droits[id] || 0) > 0;
 let satellites = [];
 
 /* ------------------------------------------------------------------
@@ -783,11 +845,11 @@ function construire(){
       o._x = xm; o._y = ym;
 
       ecussons.push({x:xm, y:ym});
-      const g = el("g",{class:"module"+(estMasque(o.id)?" masque":"")});
+      const g = el("g",{class:"module"+(estMasque(o.id)?" masque":"")+(aAcces(o.id)?"":" attente")});
       g.dataset.cherche = sansAccent([o.nom,o.code,o.quoi,o.cles].join(" "));
       g.dataset.theme = t.id;
       const lien = el("a",{href:o.url, target:"_blank", rel:"noopener", tabindex:"0",
-                           "aria-label":o.nom+" — "+o.code+" — "+t.nom});
+                           "aria-label":o.nom+" — "+o.code+" — "+t.nom+(aAcces(o.id)?"":" — en attente d’ouverture d’accès")});
       g.appendChild(lien);
 
       /* LA BARRE : quatre segments égaux, de l’anneau vers l’intérieur.
@@ -854,7 +916,10 @@ function construire(){
       lien.appendChild(tx);
       aPlacer.push({tx, trait, a, ancre, dy, xm, ym});
 
-      lien.addEventListener("click", ()=>{ noterOuverture(o.id); retenirRecent(o.id); });
+      lien.addEventListener("click", e=>{
+        if(!aAcces(o.id)){ e.preventDefault(); dialogueAttente(o); return; }
+        noterOuverture(o.id); retenirRecent(o.id);
+      });
       lien.addEventListener("mouseenter", ()=>montrer(o, lien));
       lien.addEventListener("focus",      ()=>montrer(o, lien));
       lien.addEventListener("mouseleave", cacher);
@@ -875,7 +940,8 @@ function construire(){
       l.style.borderLeftColor = t.couleur;
       l.dataset.cherche = sansAccent([o.nom,o.code,o.quoi,o.cles].join(" "));
       l.dataset.theme = t.id;
-      l.innerHTML = `<b>${o.nom}</b><span>${o.quoi}</span>`;
+      l.innerHTML = `<b>${o.nom}</b><span>${o.quoi}</span>` + (aAcces(o.id) ? "" : "<em>En attente d’ouverture d’accès</em>");
+      if(!aAcces(o.id)){ l.classList.add("attente"); l.addEventListener("click", e=>{ e.preventDefault(); dialogueAttente(o); }); }
       repli.appendChild(l);
     });
 
@@ -886,7 +952,8 @@ function construire(){
   if(typeof etatJourneeCourant !== "undefined" && etatJourneeCourant) poserJournee(etatJourneeCourant);
   if(typeof marquerPannes === "function") marquerPannes();
   const compteur = document.getElementById("compte-outils");
-  if(compteur) compteur.textContent = total + (total>1 ? " outils ouverts" : " outil ouvert");
+  const ouverts = OUTILS.filter(o=> (estAdmin() || !estMasque(o.id)) && aAcces(o.id)).length;
+  if(compteur) compteur.textContent = ouverts + (ouverts>1 ? " outils ouverts" : " outil ouvert") + " sur " + total;
 
   filtrer();
   clearTimeout(construire._fin);
@@ -982,7 +1049,7 @@ function ficheEcrire({haut, titre, quoi, bas, couleur, url, alerte, compte, rece
     (titre ? `<h3>${titre}</h3>` : "") +
     (quoi  ? `<p class="f-quoi">${quoi}</p>` : "") +
     (recent ? `<p class="f-compte" style="color:#C8A33A">Ouvert récemment depuis ce poste</p>` : "") +
-    (compte != null ? `<p class="f-compte">${compte} ouverture${compte>1?"s":""} depuis PHARE</p>` : "") +
+    (compte != null ? `<p class="f-compte">${compte} ouverture${compte>1?"s":""} depuis PLATEFORME</p>` : "") +
     (url   ? `<a class="ouvrir" href="${url}" target="_blank" rel="noopener">Ouvrir</a>` : "") +
     (bas   ? `<p class="f-bas${alerte ? " alerte" : ""}">${bas}</p>` : "");
 }
@@ -1042,8 +1109,9 @@ function montrer(o, noeud){
                compte: estAdmin() ? (usages[o.id] || 0) : null,
                recent: recents.includes(o.id),
                bas: panne ? "Hors service — signalé au journal des incidents"
-                    : estMasque(o.id) ? "Masqué aux collaborateurs" : "Cliquer sur le module pour ouvrir",
-               alerte: panne || estMasque(o.id)});
+                    : estMasque(o.id) ? "Masqué aux collaborateurs"
+                    : !aAcces(o.id) ? "En attente d’ouverture d’accès — cliquer pour demander" : "Cliquer sur le module pour ouvrir",
+               alerte: panne || estMasque(o.id) || !aAcces(o.id)});
 }
 function cacher(){
   /* si une demande vocale a proposé un outil, le panneau y revient :
@@ -1080,7 +1148,8 @@ saisie.addEventListener("input", ()=>{ if(selection){ selection=null; outilPropo
 saisie.addEventListener("keydown", e=>{
   if(e.key==="Enter"){
     const premier = satellites.find(s=>!s.noeud.classList.contains("eteint"));
-    if(premier) window.open(premier.o.url,"_blank","noopener");
+    if(premier && !aAcces(premier.o.id)) dialogueAttente(premier.o);
+    else if(premier) window.open(premier.o.url,"_blank","noopener");
   }
   if(e.key==="Escape"){ saisie.value=""; filtrer(); }
 });
@@ -1289,8 +1358,9 @@ function basculerVoix(){
   /* si un outil vient d’être proposé, le clic suivant l’ouvre */
   if(outilPropose && !enEcoute){
     const choisi = outilPropose; outilPropose = null;
-    noterOuverture(choisi.id); retenirRecent(choisi.id);
     coeurHud.repos(); mettreEnAvant(null);
+    if(!aAcces(choisi.id)){ dialogueAttente(choisi); return; }
+    noterOuverture(choisi.id); retenirRecent(choisi.id);
     window.open(choisi.url, "_blank", "noopener");
     return;
   }
@@ -1370,8 +1440,9 @@ function repondre(phrase){
     haut: "Entendu · « " + couper(phrase, 34) + " »",
     titre: premier.nom,
     quoi: premier.quoi + (autres ? " — aussi proposés : " + autres + "." : ""),
-    url: premier.url,
-    bas: "Ou cliquer au centre pour ouvrir",
+    url: aAcces(premier.id) ? premier.url : null,
+    bas: aAcces(premier.id) ? "Ou cliquer au centre pour ouvrir" : "En attente d’ouverture d’accès — cliquer au centre pour demander",
+    alerte: !aAcces(premier.id),
     couleur: theme.couleur});
   ecrire();
   coeurHud.rappel = ecrire;   /* pour y revenir après un survol */
@@ -1483,9 +1554,165 @@ document.addEventListener("visibilitychange", ()=>{
 });
 
 /* ==================================================================
-   8. DÉMARRAGE
+   9. CONNEXION DES PERSONNES (16/11/2026)
+================================================================== */
+const porte = document.getElementById("porte"), pTitre = document.getElementById("porte-titre"), pTexte = document.getElementById("porte-texte"),
+      pChamps = document.getElementById("porte-champs"), pErreur = document.getElementById("porte-erreur"),
+      pLien = document.getElementById("porte-lien"), pValider = document.getElementById("porte-valider"), pForme = document.getElementById("porte-forme");
+let surValidation = null, mdpSaisi = "";
+const echap = t => String(t == null ? "" : t).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+async function carnet(action, corps){
+  const r = await fetch(CARNET, {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(Object.assign({action}, corps || {}))});
+  const d = await r.json().catch(()=>({}));
+  if(!r.ok){ const e = new Error(d.erreur || ("Erreur " + r.status)); e.code = r.status; throw e; }
+  return d;
+}
+function retenirSession(d){
+  session = { jeton: d.jeton || (session && session.jeton), expire: d.expire || (session && session.expire),
+              personne: d.personne || (session && session.personne) || {}, contact: d.contact || (session && session.contact) || "" };
+  droits = d.acces || {}; droitsLe = Date.now();
+  try{ localStorage.setItem(CLE_SESSION, JSON.stringify(session)); localStorage.setItem(CLE_DROITS, JSON.stringify(droits)); localStorage.setItem(CLE_DROITS_LE, String(droitsLe)); }catch(e){}
+}
+function oublierSession(){
+  session = null; droits = {}; droitsLe = 0;
+  try{ localStorage.removeItem(CLE_SESSION); localStorage.removeItem(CLE_DROITS); localStorage.removeItem(CLE_DROITS_LE); }catch(e){}
+}
+function poserPersonne(){
+  const p = session && session.personne;
+  document.getElementById("qui").textContent = p ? [p.prenom, p.nom].filter(Boolean).join(" ") : "";
+  document.getElementById("deconnexion").hidden = document.getElementById("changer-mdp").hidden = !session;
+}
+function entrer(){
+  porte.classList.remove("ouvert");
+  poserPersonne(); construire();
+}
+function champ(id, libelle, type, valeur, completer){
+  return `<label for="${id}">${libelle}</label><input id="${id}" type="${type}" value="${echap(valeur || "")}" autocomplete="${completer}" autocapitalize="none" spellcheck="false">`;
+}
+function ecranPorte({titre, texte, champs, bouton, lien, surLien, valider}){
+  porte.classList.add("ouvert");
+  pTitre.textContent = titre; pTexte.textContent = texte || ""; pTexte.hidden = !texte;
+  pChamps.innerHTML = champs || ""; pErreur.textContent = "";
+  pValider.hidden = !bouton; pValider.textContent = bouton || ""; pValider.disabled = false;
+  pLien.hidden = !lien; pLien.textContent = lien || ""; pLien.onclick = surLien || null;
+  surValidation = valider || null;
+  const premier = pChamps.querySelector("input:not([value]), input[value='']") || pChamps.querySelector("input");
+  if(premier) premier.focus();
+}
+pForme.addEventListener("submit", async e=>{
+  e.preventDefault();
+  if(!surValidation || pValider.disabled) return;
+  pErreur.textContent = ""; pValider.disabled = true;
+  try{ await surValidation(); }
+  catch(err){ pErreur.textContent = err.code ? err.message : "CARNET ne répond pas. Vérifiez votre connexion, puis réessayez."; }
+  pValider.disabled = false;
+});
+
+function ecranConnexion(message, identifiant){
+  ecranPorte({titre:"Connexion", texte: message || "Saisissez votre identifiant (vos initiales) et le mot de passe reçu par courriel.",
+    champs: champ("p-id","Identifiant","text", identifiant, "username") + champ("p-mdp","Mot de passe","password","", "current-password"),
+    bouton:"Se connecter", lien:"Mot de passe oublié", surLien: ()=> ecranOubli(document.getElementById("p-id").value),
+    valider: async ()=>{
+      const mdp = document.getElementById("p-mdp").value;
+      const d = await carnet("p_connexion", {identifiant: document.getElementById("p-id").value, mdp});
+      retenirSession(d);
+      if(d.provisoire){ mdpSaisi = mdp; ecranChanger(true); } else entrer();
+    }});
+}
+function ecranChanger(impose){
+  ecranPorte({titre: impose ? "Choisissez votre mot de passe" : "Changer de mot de passe",
+    texte: impose ? "Le mot de passe reçu par courriel est provisoire. Remplacez-le par un mot de passe personnel de dix caractères au moins."
+                  : "Dix caractères au moins.",
+    champs: (impose ? "" : champ("p-ancien","Mot de passe actuel","password","", "current-password")) +
+            champ("p-neuf","Nouveau mot de passe","password","", "new-password") + champ("p-neuf2","Répétez le nouveau mot de passe","password","", "new-password"),
+    bouton:"Enregistrer", lien: impose ? "Se déconnecter" : "Annuler",
+    surLien: impose ? ()=>{ oublierSession(); poserPersonne(); ecranConnexion(); } : entrer,
+    valider: async ()=>{
+      const neuf = document.getElementById("p-neuf").value;
+      if(neuf !== document.getElementById("p-neuf2").value){ const e = new Error("Les deux saisies ne sont pas identiques."); e.code = 400; throw e; }
+      const d = await carnet("p_changer", {jeton: session.jeton, ancien: impose ? mdpSaisi : document.getElementById("p-ancien").value, nouveau: neuf});
+      mdpSaisi = ""; retenirSession(d); entrer();
+    }});
+}
+function ecranOubli(identifiant){
+  ecranPorte({titre:"Mot de passe oublié", texte:"Indiquez votre identifiant : la demande est transmise à Jean-François Dumetz, qui vous enverra un nouveau mot de passe provisoire.",
+    champs: champ("p-id","Identifiant","text", identifiant, "username"), bouton:"Envoyer la demande", lien:"Retour", surLien: ()=> ecranConnexion("", document.getElementById("p-id").value),
+    valider: async ()=>{
+      const id = document.getElementById("p-id").value.trim();
+      if(!id){ const e = new Error("Indiquez votre identifiant."); e.code = 400; throw e; }
+      const d = await carnet("p_oubli", {identifiant: id});
+      ecranPorte({titre:"Demande transmise", texte:"Votre demande est notée dans CARNET. Vous recevrez un nouveau mot de passe provisoire par courriel.",
+        champs: d.contact ? `<p><a style="color:var(--cyan)" href="${echap(courrielVers(d.contact, "Mot de passe oublié", "Bonjour,\n\nJ’ai demandé un nouveau mot de passe pour les outils de l’étude (identifiant : " + id + ").\n\nMerci,"))}">Prévenir aussi par courriel</a></p>` : "",
+        lien:"Retour à la connexion", surLien: ()=> ecranConnexion("", id)});
+    }});
+}
+const courrielVers = (adresse, objet, corps) => "mailto:" + adresse + "?subject=" + encodeURIComponent(objet) + "&body=" + encodeURIComponent(corps);
+
+/* un outil non ouvert : la boîte dit « en attente » et prépare la demande */
+const voileAttente = document.getElementById("voile-attente");
+function dialogueAttente(o){
+  const p = (session && session.personne) || {};
+  document.getElementById("attente-titre").textContent = o.code + " — " + o.nom;
+  const lien = document.getElementById("attente-demander");
+  const contact = session && session.contact;
+  document.getElementById("attente-texte").textContent = "En attente d’ouverture d’accès. " +
+    (contact ? "Le bouton prépare un courriel de demande à Jean-François Dumetz : il ne reste qu’à l’envoyer." : "Pour l’obtenir, écrivez à Jean-François Dumetz.");
+  lien.hidden = !contact;
+  if(contact) lien.href = courrielVers(contact, "Demande d’accès à " + o.code,
+    "Bonjour,\n\nJe souhaiterais avoir accès à l’outil " + o.code + " (" + o.nom + ").\n\nMerci,\n" + [p.prenom, p.nom].filter(Boolean).join(" "));
+  voileAttente.classList.add("ouvert");
+  document.getElementById("attente-fermer").focus();
+}
+const fermerAttente = ()=> voileAttente.classList.remove("ouvert");
+document.getElementById("attente-fermer").addEventListener("click", fermerAttente);
+document.getElementById("attente-demander").addEventListener("click", ()=> setTimeout(fermerAttente, 300));
+voileAttente.addEventListener("mousedown", e=>{ if(e.target === voileAttente) fermerAttente(); });
+document.addEventListener("keydown", e=>{ if(e.key === "Escape") fermerAttente(); });
+
+document.getElementById("deconnexion").addEventListener("click", ()=>{ const p = session && session.personne; oublierSession(); poserPersonne(); construire(); ecranConnexion(p ? "Vous êtes déconnecté." : ""); });
+document.getElementById("changer-mdp").addEventListener("click", ()=> ecranChanger(false));
+
+/* relecture des droits : au démarrage, puis au retour sur l’onglet (au plus toutes les cinq minutes),
+   pour qu’un accès ouvert ou retiré dans CARNET apparaisse sans se reconnecter */
+let derniereLecture = 0;
+async function relireDroits(){
+  if(!session) return;
+  try{
+    const d = await carnet("p_moi", {jeton: session.jeton});
+    derniereLecture = Date.now();
+    if(d.provisoire){ oublierSession(); poserPersonne(); ecranConnexion("Votre mot de passe est provisoire : reconnectez-vous pour le remplacer."); return; }
+    const avant = JSON.stringify(droits);
+    retenirSession(d); poserPersonne();
+    if(avant !== JSON.stringify(droits) || porte.classList.contains("ouvert")) entrer();
+  }catch(err){
+    if(err.code === 401){ oublierSession(); poserPersonne(); construire(); ecranConnexion("Votre connexion a expiré : reconnectez-vous."); }
+    else if(Date.now() - droitsLe > REPLI_MS){                /* CARNET injoignable depuis plus de sept jours : plus aucun accès sur le poste */
+      droits = {}; construire();
+      ecranPorte({titre:"Accès non vérifiés", texte:"CARNET ne répond pas et vos accès n’ont pas pu être vérifiés depuis plus de sept jours. Réessayez un peu plus tard ; si la panne dure, prévenez Jean-François Dumetz.",
+        bouton:"Réessayer", lien:"Se déconnecter", surLien: ()=>{ oublierSession(); poserPersonne(); ecranConnexion(); }, valider: async ()=>{ await relireDroits(); }});
+    }
+    else if(porte.classList.contains("ouvert")) entrer();   /* CARNET injoignable : on montre les derniers accès connus (sept jours au plus) */
+  }
+}
+document.addEventListener("visibilitychange", ()=>{
+  if(!document.hidden && session && !porte.classList.contains("ouvert") && Date.now() - derniereLecture > 5*60*1000) relireDroits();
+});
+function ouvrirSession(){
+  try{
+    session = JSON.parse(localStorage.getItem(CLE_SESSION) || "null");
+    droits = JSON.parse(localStorage.getItem(CLE_DROITS) || "{}") || {};
+    droitsLe = Number(localStorage.getItem(CLE_DROITS_LE)) || 0;
+  }catch(e){ session = null; droits = {}; droitsLe = 0; }
+  if(!session || !session.jeton || !(session.expire > Date.now())){ oublierSession(); ecranConnexion(); return; }
+  relireDroits();
+}
+
+/* ==================================================================
+   10. DÉMARRAGE
 ================================================================== */
 construire();                 /* affichage immédiat, sans attendre la base */
+ouvrirSession();
 lireUsages().then(construire);
 lireReglages().then(()=>{
   if(sessionStorage.getItem("phare-admin")==="1" && reglages && reglages.empreinte){
