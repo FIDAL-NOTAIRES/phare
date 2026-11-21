@@ -1149,7 +1149,7 @@ saisie.addEventListener("keydown", e=>{
   if(e.key==="Enter"){
     const premier = satellites.find(s=>!s.noeud.classList.contains("eteint"));
     if(premier && !aAcces(premier.o.id)) dialogueAttente(premier.o);
-    else if(premier) window.open(premier.o.url,"_blank","noopener");
+    else if(premier) window.open(adresseOutil(premier.o),"_blank","noopener");
   }
   if(e.key==="Escape"){ saisie.value=""; filtrer(); }
 });
@@ -1361,7 +1361,7 @@ function basculerVoix(){
     coeurHud.repos(); mettreEnAvant(null);
     if(!aAcces(choisi.id)){ dialogueAttente(choisi); return; }
     noterOuverture(choisi.id); retenirRecent(choisi.id);
-    window.open(choisi.url, "_blank", "noopener");
+    window.open(adresseOutil(choisi), "_blank", "noopener");
     return;
   }
   if(enEcoute){ try{ ecouteur.stop(); }catch(e){} return; }
@@ -1562,6 +1562,25 @@ const porte = document.getElementById("porte"), pTitre = document.getElementById
 let surValidation = null, mdpSaisi = "";
 const echap = t => String(t == null ? "" : t).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 
+/* ÉTAPE 3 (21/11/2026, JFD : option A) — PLATEFORME TRANSMET LA CONNEXION aux outils qui vérifient eux-mêmes
+   les droits : la personne y arrive déjà reconnue, sans ressaisir ses initiales. Le jeton voyage dans le FRAGMENT
+   de l'adresse (après le #) : il n'est jamais envoyé au serveur de l'outil, qui l'efface de l'adresse dès la lecture.
+   Liste des outils branchés : à compléter au fil de l'étape 3 (MONETA, SUIVI ensuite). */
+const OUTILS_VERIFIANT = ["fusion"];
+function adresseOutil(o){
+  if(!o || !o.url) return o && o.url;
+  if(!OUTILS_VERIFIANT.includes(o.id) || !session || !session.jeton || !(session.expire > Date.now())) return o.url;
+  return o.url.split("#")[0] + "#acces=" + encodeURIComponent(session.jeton);
+}
+/* les liens de l'anneau et de la liste gardent leur adresse nue (survol, copie du lien) ; le jeton n'est ajouté qu'au clic */
+document.addEventListener("click", (ev)=>{
+  if(ev.defaultPrevented) return;                 /* outil en attente d'accès : le clic a déjà été traité */
+  const a = ev.target && ev.target.closest ? ev.target.closest("a[href]") : null; if(!a) return;
+  const o = OUTILS.find(x => OUTILS_VERIFIANT.includes(x.id) && x.url === a.getAttribute("href")); if(!o) return;
+  if(!aAcces(o.id)) return;
+  const adr = adresseOutil(o); if(adr === o.url) return;
+  ev.preventDefault(); window.open(adr, "_blank", "noopener");
+});
 async function carnet(action, corps){
   const r = await fetch(CARNET, {method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(Object.assign({action}, corps || {}))});
   const d = await r.json().catch(()=>({}));
